@@ -24,6 +24,16 @@ def parse_regex_aux(f):
     simbolo = l.replace(" ", "")[0]
     return Regex('simbolo', simbolo, [])
 
+def reducir_argumentos(regex):
+  if len(regex.argumentos) < 2:
+    return regex
+  else:
+    a = reducir_argumentos(regex.argumentos.pop(0))
+    b = reducir_argumentos(regex.argumentos.pop(0))
+    r = Regex(regex.nombre, '', [a,b])
+    regex.argumentos.insert(0,r)
+    return regex
+
 class Regex:
   def __init__(self, nombre, valor, argumentos ):
     self.nombre = nombre
