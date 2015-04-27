@@ -24,3 +24,12 @@ automata2 = Automata(estados,alfabeto,inicial,finales,transiciones2)
 automata3 = Automata(estados,alfabeto,inicial,finales,transiciones3)
 automata4 = Automata(estados,alfabeto,inicial,finales4,transiciones4)
 automata5 = Automata(estados,alfabeto,inicial,finales5,transiciones5)
+automata6 = automata5.remover_transiciones_lambda()
+automata7 = automata6.determinizar_automata()
+
+estados29 = [0,1,2]
+alfabeto29 = ['a','b']
+finales29 = [2]
+inicial29 = 0
+transiciones29 = [[0,'a',0],[0,'b',0],[0,'a',1],[1,'b',2]]
+automata29 = Automata(estados29, alfabeto29, inicial29, finales29, transiciones29)

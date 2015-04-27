@@ -153,6 +153,8 @@ class Automata:
     self.estados_finales = estados_finales
     self.transiciones = transiciones
 
+  ##### Metodos auxiliares para transformar AFND-lambda en AFND
+
   def clausura(self, estado, simbolo):
   	resto_transiciones = list(self.transiciones)
   	if simbolo == 'lambda':
@@ -171,9 +173,6 @@ class Automata:
         clausura.append(t[2])
       resto_transiciones_copy.append(t)
     return clausura
-
-  def clausura_lambda(self,estado):
-    return self.clausura(estado,'lambda')
 
   #La idea para calcular las nuevas transiciones es la siguiente:
   #Dado un estado q y un símbolo de transición s
@@ -194,7 +193,7 @@ class Automata:
         if s != 'lambda':
           clausura_lambda_q = self.clausura_lambda(q)
           for e in clausura_lambda_q:
-            estados_alcanzables_por_transicion = self.clausura(e,s)
+            estados_alcanzables_por_transicion = self.delta_nd(e,s)
             clausura_lambda_estados_alcanzables = [self.clausura_lambda(x) for x in estados_alcanzables_por_transicion ]
             clausura_lambda_estados_alcanzables = [x for sublist in clausura_lambda_estados_alcanzables for x in sublist]
             clausura_lambda_estados_alcanzables = set(clausura_lambda_estados_alcanzables)
@@ -205,3 +204,43 @@ class Automata:
 
     return Automata(self.estados, self.alfabeto, self.estado_inicial, finales, nuevas_transiciones)
 
+  ##### Metodos auxiliar para transformar un AFND en AFD
+
+  def clausura_lambda(self,estado):
+    return self.clausura(estado,'lambda')
+
+  def delta_nd(self,estado,simbolo):
+  	return sorted([t[2] for t in self.transiciones if (t[0] ==
+  	 estado and t[1] == simbolo)])
+
+  def delta_nd_conjunto(self,conjunto_estados,simbolo):
+  	es = [self.delta_nd(e,simbolo) for e in conjunto_estados]
+  	es = [e for sublist in es for e in sublist]
+  	return list(set(es))
+
+  def transiciones_de_estado(self, estado):
+  	return [t[1] for t in self.transiciones if t[0] == estado]
+
+  def transiciones_de_conjunto(self,conjunto_estados):
+  	es = [self.transiciones_de_estado(e) for e in conjunto_estados]
+  	es = [e for sublist in es for e in sublist]
+  	es = list(set(es))
+  	return es
+
+  def determinizar_automata(self):
+  	inicial = [self.estado_inicial]
+  	faltan_agregar = [inicial]
+  	transiciones = []
+  	estados = []
+  	while len(faltan_agregar) > 0:
+  		es = faltan_agregar.pop()
+  		estados.append(es)
+  		ts = self.transiciones_de_conjunto(es)
+  		for t in ts:
+  			estado = self.delta_nd_conjunto(es,t)
+  			transiciones.append([es,t,estado])
+  			if not(estado in estados) and not(estado in faltan_agregar):
+  				faltan_agregar.append(estado)
+  	fs = set(self.estados_finales)
+  	finales = [e for e in estados if len(fs.intersection(set(e))) > 0]
+  	return Automata(estados, self.alfabeto, inicial, finales, transiciones)
