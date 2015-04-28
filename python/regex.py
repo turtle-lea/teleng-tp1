@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+#  -*- coding: utf-8 -*-
 #!/usr/bin/python
 
 def parse_regex(filename):
@@ -21,7 +21,10 @@ def parse_regex_aux(f):
       argumentos.append(parse_regex_aux(f))
     return Regex(operacion, '', argumentos)
   else:
-    simbolo = l.replace(" ", "")[0]
+    line = l.replace("\t", "")
+    simbolo = line[0]
+    if simbolo[0] == "\\" and line[1] == 't':
+      simbolo = "\t"
     return Regex('simbolo', simbolo, [])
 
 def reducir_argumentos(regex):
