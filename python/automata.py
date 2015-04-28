@@ -3,6 +3,15 @@
 
 def armar_automata(regpars):
 
+	if regpars.nombre == 'OPT':
+		automata0 = Automata([0],['lambda'], 0, [0], [])
+		automataF = Automata([0],['lambda'], 0, [0], [])
+		automataM1 = Automata([0,1],['lambda'], 0, [1], [[0,'lambda',1]])
+		automataM1 = armarConcat(automata0, 'lambda', automataM1)  #agregar transición final 0 con inicial
+		automataM1 = armarConcat(automataM1, 'lambda', automataF)
+		automataM2 = armar_automata(regpars.argumentos[0])
+		automataM1 = armarOr(automataM1, 'lambda', automataM2)
+
 	if regpars.nombre == 'CONCAT':
 
 		cant_arg = len(regpars.argumentos)
