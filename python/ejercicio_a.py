@@ -9,10 +9,11 @@ def afd_minimo(archivo_regex, archivo_automata):
 	regpars = parse_regex(archivo_regex)
 	automata = armar_automata(regpars)
 	#automata = automata.remover_transiciones_lambda()
+	#automata = automata.determinizar_automata()
 	#escribir_archivo(automata, archivo_automata)
 
 	return automata
-	
+
 
 def transitions_group(automata):
 	group = {}
@@ -25,39 +26,39 @@ def transitions_group(automata):
 			value = group[key]
 			if not(transition[1] in value):
 				value.append(transition[1])
-				
+
 		group[key] = value
-		
-	return group	
+
+	return group
 
 # http://www.cs.odu.edu/~toida/nerzic/390teched/regular/fa/min-fa.html
 def minimizar_afd(automata):
 	s1 = automata.finales
-	s2 = [estado for estado in automata.estados if estado not in s1] 
+	s2 = [estado for estado in automata.estados if estado not in s1]
 	partition = [s1, s2]
-	
+
 	transitions = transitions_group(automata)
 	new_partition = particionar(partition, transitions)
-	
+
 	while not (new_partition == partition):
 		new_partition = particionar(partition)
-		
+
 	partition = eliminar_estados_trampa(new_partition)
-	
-	
+
+
 def nueva_particion (partition, transitions):
-	
+
 def particionar (subconjunto, transitions):
 	resultado = []
-	
+
 	for elemento in subconjunto:
 		i = 0
 		encontrado = false
 		while (i < len(subconjunto)) and (not encontrado):
 			encontrado = (elemento, subconjunto[i]) in transitions
-		
-		if ( 
-	
+
+		if (
+
 
 
 
