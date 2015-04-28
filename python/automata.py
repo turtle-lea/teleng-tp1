@@ -3,6 +3,15 @@
 
 def armar_automata(regpars):
 
+	if regpars.nombre == 'OPT':
+		automata0 = Automata([0],['lambda'], 0, [0], [])
+		automataF = Automata([0],['lambda'], 0, [0], [])
+		automataM1 = Automata([0,1],['lambda'], 0, [1], [[0,'lambda',1]])
+		automataM1 = armarConcat(automata0, 'lambda', automataM1)  #agregar transición final 0 con inicial
+		automataM1 = armarConcat(automataM1, 'lambda', automataF)
+		automataM2 = armar_automata(regpars.argumentos[0])
+		automataM1 = armarOr(automataM1, 'lambda', automataM2)
+
 	if regpars.nombre == 'CONCAT':
 
 		cant_arg = len(regpars.argumentos)
@@ -244,3 +253,23 @@ class Automata:
   	fs = set(self.estados_finales)
   	finales = [e for e in estados if len(fs.intersection(set(e))) > 0]
   	return Automata(estados, self.alfabeto, inicial, finales, transiciones)
+
+  def crear_estado_trampa(self):
+	return max(self.estados)+1	
+
+  def completar_transiciones(self,estado_trampa):
+	estados = self.estados + [estado_trampa]	
+	transiciones_agregadas = []
+	for e in estados:
+		for s in self.alfabeto:
+			if len([t for t in self.transiciones if (t[0] == e) and (t[1] == s) ]) == 0:
+				transiciones_agregadas.append([e,s,estado_trampa])
+	return transiciones_agregadas
+			
+
+  def complemento(self):
+	estado_trampa = self.crear_estado_trampa()
+	transiciones_a_agregar = self.completar_transiciones(estado_trampa)
+	nuevos_finales = set(self.estados+[estado_trampa]) - set(self.estados_finales)
+	nuevos_finales = list(nuevos_finales)
+	return Automata(self.estados+[estado_trampa], self.alfabeto, self.estado_inicial, nuevos_finales, self.transiciones+transiciones_a_agregar)

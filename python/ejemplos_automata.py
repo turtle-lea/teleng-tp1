@@ -33,3 +33,10 @@ finales29 = [2]
 inicial29 = 0
 transiciones29 = [[0,'a',0],[0,'b',0],[0,'a',1],[1,'b',2]]
 automata29 = Automata(estados29, alfabeto29, inicial29, finales29, transiciones29)
+
+estados8 = [0,1]
+alfabeto8 = ['a','b']
+finales8 = [1]
+inicial8 = 0
+transiciones8 = [ [0,'a',1] ]
+automata8 = Automata(estados8, alfabeto8, inicial8, finales8, transiciones8)
