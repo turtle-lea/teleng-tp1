@@ -153,6 +153,33 @@ def renombrarTransiciones(transiciones, estado, nuevoEstado):
 			transiciones[i][2] = nuevoEstado
 
 	return transiciones
+	
+def interseccion(automata1, automata2):
+	inicial1 = automata1.estado_inicial
+	inicial2 = automata2.estado_inicial
+	finales1 = automata1.estados_finales
+	finales2 = automata2.estados_finales
+	alfabeto = []
+	for a1 in automata1.alfabeto:
+		for a2 in automata2.alfabeto:
+			if a1 == a2:
+				alfabeto.append(a1)
+	estados = []
+	for e1 in automata1.estados:
+		for e2 in automata2.estados:
+			estados.append([e1,e2])
+	transiciones = []
+	for t1 in automata1.transiciones:
+		for t2 in automata2.transiciones:
+			if t1[1] == t2[1]:
+				transiciones.append([[t1[0],t2[0]],t1[1],[t1[2],t2[2]]])
+	inicial = [inicial1,inicial2]
+	finales = []
+	for f1 in finales1:
+		for f2 in finales2:
+			finales.append([f1,f2])
+	
+	return Automata(estados, alfabeto, inicial, finales, transiciones)
 
 class Automata:
   def __init__(self, estados, alfabeto, estado_inicial, estados_finales, transiciones):
