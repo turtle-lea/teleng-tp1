@@ -263,6 +263,28 @@ class Automata:
   	es = list(set(es))
   	return es
 
+  def renombrar_estados(self):
+  	nombre_actual = 0
+  	for i in range(0, len(self.estados)):
+  		e = self.estados[i]
+  		nombre_viejo = e
+  		if self.estado_inicial == e:
+  			self.estado_inicial = nombre_actual
+  		if e in self.estados_finales:
+  			self.estados_finales.remove(e)
+  			self.estados_finales.append(nombre_actual)
+  		for j in range(0, len(self.transiciones)):
+  			t = self.transiciones[j]
+  			nueva_t = list(t)
+  			if nueva_t[0] == nombre_viejo:
+  				nueva_t[0] = nombre_actual
+  			if nueva_t[2] == nombre_viejo:
+  				nueva_t[2] = nombre_actual
+  			if t != nueva_t:
+  				self.transiciones[j] = nueva_t
+  		self.estados[i] = nombre_actual
+  		nombre_actual += 1
+
   def determinizar_automata(self):
   	inicial = [self.estado_inicial]
   	faltan_agregar = [inicial]
@@ -279,24 +301,26 @@ class Automata:
   				faltan_agregar.append(estado)
   	fs = set(self.estados_finales)
   	finales = [e for e in estados if len(fs.intersection(set(e))) > 0]
-  	return Automata(estados, self.alfabeto, inicial, finales, transiciones)
+  	a = Automata(estados, self.alfabeto, inicial, finales, transiciones)
+  	a.renombrar_estados()
+  	return a
 
   def crear_estado_trampa(self):
-	return max(self.estados)+1	
+		return max(self.estados)+1
 
   def completar_transiciones(self,estado_trampa):
-	estados = self.estados + [estado_trampa]	
-	transiciones_agregadas = []
-	for e in estados:
-		for s in self.alfabeto:
-			if len([t for t in self.transiciones if (t[0] == e) and (t[1] == s) ]) == 0:
-				transiciones_agregadas.append([e,s,estado_trampa])
-	return transiciones_agregadas
-			
+		estados = self.estados + [estado_trampa]
+		transiciones_agregadas = []
+		for e in estados:
+			for s in self.alfabeto:
+				if len([t for t in self.transiciones if (t[0] == e) and (t[1] == s) ]) == 0:
+					transiciones_agregadas.append([e,s,estado_trampa])
+		return transiciones_agregadas
+
 
   def complemento(self):
-	estado_trampa = self.crear_estado_trampa()
-	transiciones_a_agregar = self.completar_transiciones(estado_trampa)
-	nuevos_finales = set(self.estados+[estado_trampa]) - set(self.estados_finales)
-	nuevos_finales = list(nuevos_finales)
-	return Automata(self.estados+[estado_trampa], self.alfabeto, self.estado_inicial, nuevos_finales, self.transiciones+transiciones_a_agregar)
+		estado_trampa = self.crear_estado_trampa()
+		transiciones_a_agregar = self.completar_transiciones(estado_trampa)
+		nuevos_finales = set(self.estados+[estado_trampa]) - set(self.estados_finales)
+		nuevos_finales = list(nuevos_finales)
+		return Automata(self.estados+[estado_trampa], self.alfabeto, self.estado_inicial, nuevos_finales, self.transiciones+transiciones_a_agregar)

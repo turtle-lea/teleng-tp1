@@ -8,8 +8,8 @@ def afd_minimo(archivo_regex, archivo_automata):
 
 	regpars = parse_regex(archivo_regex)
 	automata = armar_automata(regpars)
-	#automata = automata.remover_transiciones_lambda()
-	#automata = automata.determinizar_automata()
+	automata = automata.remover_transiciones_lambda()
+	automata = automata.determinizar_automata()
 	#escribir_archivo(automata, archivo_automata)
 
 	return automata
@@ -46,8 +46,6 @@ def minimizar_afd(automata):
 	partition = eliminar_estados_trampa(new_partition)
 
 
-def nueva_particion (partition, transitions):
-
 def particionar (subconjunto, transitions):
 	resultado = []
 
@@ -56,11 +54,6 @@ def particionar (subconjunto, transitions):
 		encontrado = false
 		while (i < len(subconjunto)) and (not encontrado):
 			encontrado = (elemento, subconjunto[i]) in transitions
-
-		if (
-
-
-
 
 def escribir_archivo(automata, filename):
 	f = open(filename, 'w')

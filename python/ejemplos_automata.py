@@ -4,6 +4,9 @@
 import automata
 from automata import *
 
+import ejercicio_a
+from ejercicio_a import *
+
 transiciones1 = [[0,'lambda',1],[0,'a',2],[0,'lambda',3], [1,'lambda',4], [3,'lambda',4]]
 estados = [0,1,2,3,4]
 finales = []
@@ -72,3 +75,6 @@ inicial13 = 0
 transiciones13 = [ [0,'c',0], [0,'b',1], [1,'b',0] ]
 automata13 = Automata(estados13, alfabeto13, inicial13, finales13, transiciones13)
 
+automata9 = afd_minimo("ejemplo1.txt","ejemplo1output.txt")
+automata10 = afd_minimo("ejemplo2.txt","ejemplo1output.txt")
+automata11 = afd_minimo("ejemplo2.txt","ejemplo1output.txt")
