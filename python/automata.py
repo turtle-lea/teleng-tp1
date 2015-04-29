@@ -179,8 +179,8 @@ def interseccion(automata1, automata2):
 		for f2 in finales2:
 			finales.append([f1,f2])
 
+	a = Automata(estados, alfabeto, inicial, finales, transiciones)
 	a.renombrar_estados()
-
 	return a
 
 
