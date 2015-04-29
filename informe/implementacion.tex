@@ -12,3 +12,16 @@ La forma de generar nuestro autómata finito es por medio del método de Thompso
 \subsection{Explicación del armado de un automata para hallar su complemento:}
 Para esta función tuvimos un problema, ya que para hallar el complemento de un autómata necesitamos, para un estado y un alfabeto, saber su transición aunque ésta no exista. Para solucionar esto agregamos un estado \textit{"trampa"}, y nuestro algoritmo se encargará de generar las transiciones ausentes de nuestro autómata y llevarlas a este nuevo estado. Como sabemos este estado \textit{"trampa"} debe cumplir con su definición, no debe ser un estado final y tampoco se puede salir de él por medio de alguna transición. 
 
+\subsection{Equivalencia de autómatas}
+Para poder obtener la equivalencia pensamos diferentes estrategias:
+\begin{itemize}
+\item La primera fue la de ir recorriendo todos los caminos de los autómatas y ver si pasaban por las transiciones en las cuales ambos tenían el mismo caracter. La descartamos porque era engorrosa y difícil de implementar.
+\item La segunda idea que surgió fue la usar el complemento de alguno de los dos autómatas e intersecarlo con el otro, de esta manera, si ambos eran equivalente, el resultado será vacío. Con esto parecía que teníamos resuelto el ejercicio, pero notamos casos bordes donde no se satisfacía muy bien este método. Por ejemplo: ¿Qué pasa si uno de los dos autómatas (A1) era inicialmente vacío y el otro no (A2), y además, tomamos el complemento del último mencionado (A2)? Bueno, al intersecar ambos automatas el resultado sería vacío por definición misma de los conjuntos, y concluiríamos que son equivalentes, lo cual es un error.
+\item La tercera y última opción fue la siguiente, llamemos a uno de los dos autómatas A1 y al otro A2. Si "tomamos el complemento de A2 y lo intersecamos con A1" (A3), y "tomamos el complemento de A1 y lo intersecamos con A2" (A4), entonces si tanto A3 y A4 dieron vacío podremos afirmar que son equivalentes. Se puede ver fácilmente que este caso cubre al mencionado en la \emph{segundo idea}, puesto que si miramos la parte agregada recientemente nos comprobará que no son equivalente. Esto es, tomamos al que inicialmente era vacío (A1) su complemento, esto nos da un automata que acepta todas las cadenas, y lo intersecamos con uno no vacío (A2), el resultado es exactamente el autómata A2. Entonces, dado esta nueva propuesta, podemos concluir que no son equivalente, lo cual efectivamente es verdad. Además, para esta tercera opción, pudimos encontrar una demostración que indica que nuestra propuesta marca formalmente una equivalencia entre ambos autómatas.
+\end{itemize}
+
+
+
+ 
+
+
