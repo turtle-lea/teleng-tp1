@@ -6,12 +6,11 @@ from automata import *
 
 def afd_minimo(archivo_regex, archivo_automata):
         regpars = parse_regex(archivo_regex)
-		automata = armar_automata(regpars)
-		automata = automata.remover_transiciones_lambda()
-		automata = automata.determinizar_automata()
-		escribir_archivo(automata, archivo_automata)
-
-	return automata
+        automata = armar_automata(regpars)
+        automata = automata.remover_transiciones_lambda()
+        automata = automata.determinizar_automata()
+        escribir_archivo(automata, archivo_automata)
+        return automata
 
 
 #automata debe ser deterministico
@@ -37,21 +36,25 @@ def minimizar_afd(automata):
         partition = [s1, s2]
         new_partition = nueva_particion(partition, automata.alfabeto, transitions)
         while not (new_partition == partition):
-                print(partition)
-                print(new_partition)
+                #print(partition)
+                #print(new_partition)
                 partition = new_partition
                 new_partition = nueva_particion(partition, automata.alfabeto, transitions)
 
 
-        #Delete "trap" states from the new partition
+        #Delete "trap" states and unreachable states from the new partition
         partition = []
         for subset in new_partition:
-                print (subset)
+                #print (subset)
                 new_subset = eliminate_death_states(subset, automata.alfabeto, transitions, automata.estados_finales)
-                print (new_subset)
+                #print (new_subset)
+                new_subset = eliminate_unreachable_states(automata.estado_inicial, new_subset, automata.alfabeto, transitions, automata.estados)
+                #print (new_subset)
+                
                 if len(new_subset) > 0:
                         partition.append(new_subset)
 
+    
         #Generate the reduce automat transitions
         transitions_dicc = partition_transitions(partition, automata.alfabeto, transitions)
         new_transitions = []
@@ -77,7 +80,7 @@ def minimizar_afd(automata):
         #print("automata.estados_finales" + str(automata.estados_finales))
         for final in automata.estados_finales:
             new_final = choose_representatives(partition, final)
-            if not(new_final in new_final_states):
+            if not(new_final == -1) and not(new_final in new_final_states):
                 new_final_states.append(new_final)
 
 
@@ -196,6 +199,14 @@ def eliminate_death_states(subset, alphabet, transitions, terminal_states):
 
     return result
 
+def eliminate_unreachable_states(init_state, subset, alphabet, transitions, states):
+    result = []
+    while len(subset) > 0:
+        state = subset.pop(0)
+        if n_recheable(init_state, state, alphabet, transitions, len(states)):
+            result.append(state)
+    return result
+
 
 def is_death_state(state, alphabet, transitions, terminal_states):
     another_state = False
@@ -248,7 +259,18 @@ def partition_transitions(partition, alphabet, transitions):
 
     return new_transitions
 
-
+def n_recheable(orig_state, dest_state, alphabet, transitions, n):
+    recheable = (orig_state == dest_state)
+    if n > 0:
+        for symbol in alphabet:
+            if (orig_state, symbol) in transitions:
+                #print("(orig_state, symbol)" + str((orig_state, symbol)))
+                next_state = transitions[(orig_state, symbol)]
+                #print("next_state" + str(next_state))
+                recheable = recheable or (n_recheable(next_state, dest_state, alphabet, transitions, n-1))
+    return recheable
+	
+	
 def escribir_archivo(automata, filename):
 	f = open(filename, 'w')
 

@@ -121,3 +121,32 @@ def test5():
     print (min_afd.estado_inicial)
     print (min_afd.estados_finales)
     print (min_afd.transiciones)
+
+def test6():
+    transiciones = []
+    transiciones.append([1, 'a', 2])
+    transiciones.append([2, 'b', 3])
+    transiciones.append([3, 'c', 4])
+    transiciones.append([4, 'd', 4])
+    transiciones.append([5, 'e', 6])
+    transiciones.append([6, 'f', 7])
+    transiciones.append([7, 'g', 8])
+    alfabeto = ["a", "b", "c", "d", "e", "f", "g"]
+    estados = [1,2,3,4,5,6,7,8]
+    estados_finales = [4, 8]
+    estado_inicial = 1
+
+    automat = Automata (estados, alfabeto, estado_inicial, estados_finales, transiciones)
+    min_afd = minimizar_afd(automat)
+
+    #dicctest = transitions_by_state_and_label(automat.transiciones)
+    #print (dicctest[(3, 'b')])
+    transitions = transitions_by_state_and_label(automat)
+    #print (transitions)
+    #print (n_recheable(1, 5, alfabeto, transitions, len(estados)))
+    print (min_afd.estados)
+    print (min_afd.alfabeto)
+    print (min_afd.estado_inicial)
+    print (min_afd.estados_finales)
+    print (min_afd.transiciones)
+
