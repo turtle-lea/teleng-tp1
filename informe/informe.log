@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.10.30)  29 APR 2015 02:35
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2014.10.30)  29 APR 2015 04:47
 entering extended mode
  %&-line parsing enabled.
 **informe.tex
@@ -720,10 +720,10 @@ LaTeX Info: Redefining \pageref on input line 90.
 \openout3 = `informe.out'.
 
 \AtBeginShipoutBox=\box60
- <caratula/DC.png, id=7, 802.9197pt x 287.6346pt>
+ <caratula/DC.png, id=15, 802.9197pt x 287.6346pt>
 File: caratula/DC.png Graphic file (type png)
 
-<use caratula/DC.png> <caratula/UBA.jpg, id=9, 233.4321pt x 233.9139pt>
+<use caratula/DC.png> <caratula/UBA.jpg, id=17, 233.4321pt x 233.9139pt>
 File: caratula/UBA.jpg Graphic file (type jpg)
 
 <use caratula/UBA.jpg>
@@ -753,23 +753,25 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
  [1]
 (./implementacion.tex) [2] AED: lastpage setting LastPage (./informe.aux) ) 
 Here is how much of TeX's memory you used:
- 6771 strings out of 495061
- 93300 string characters out of 1182620
- 178750 words of memory out of 3000000
- 9792 multiletter control sequences out of 15000+50000
- 7124 words of font info for 29 fonts, out of 3000000 for 9000
+ 6791 strings out of 495061
+ 93559 string characters out of 1182620
+ 183750 words of memory out of 3000000
+ 9809 multiletter control sequences out of 15000+50000
+ 8075 words of font info for 32 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 38i,12n,43p,273b,315s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 38i,12n,43p,758b,315s stack positions out of 5000i,500n,10000p,200000b,50000s
 </us
 r/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/tex
 mf-texlive/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/share/texmf-texlive/
-fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/
-public/amsfonts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfo
-nts/cm/cmr17.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy1
-0.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on informe.pdf (3 pages, 864871 bytes).
+fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1
+/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsf
+onts/cm/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmr1
+7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr
+/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texm
+f-texlive/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on informe.pdf (3 pages, 893892 bytes).
 PDF statistics:
- 60 PDF objects out of 1000 (max. 8388607)
- 6 named destinations out of 1000 (max. 500000)
- 19 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 80 PDF objects out of 1000 (max. 8388607)
+ 8 named destinations out of 1000 (max. 500000)
+ 35 words of extra memory for PDF output out of 10000 (max. 10000000)
 

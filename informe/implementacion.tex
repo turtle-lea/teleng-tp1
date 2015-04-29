@@ -1,0 +1,14 @@
+\subsection{Explicación del armado del autómata finito:}
+Para realizar esta función nosotros partimos de un lenguaje regular parseado, el cual está explicado en la sección \textbf{Parseo de Regex}. A este mismo lo leeremos e iremos armando el autómata finito correspondiente.
+La forma de generar nuestro autómata finito es por medio del método de Thompson. Básicamente el algoritmo funciona de forma recursiva y lo detallaremos a continuacion:
+\begin{itemize}
+\item Se fija si debe realizar \textit{CONCAT}, \textit{PLUS}, \textit{STAR}, \textit{OR}, \textit{OPT} o \textit{SIMBOLO}.
+\item Si es \textit{SIMBOLO} crea un automata que tiene dos estados y una transición con el símbolo correspondiente.
+\item En caso de no ser \textit{SIMBOLO} va mirando los argumentos y, en cada caso, llama recursivamente a la función para que cree el autómata del mismo. Luego dentro del nivel en el que nos encontramos usamos la funcion \textit{armarConcar}, \textit{armarPlus} o \textit{armarOr} según corresponda, de esta manera, cada una se encargarán de armar el autómata tal como lo describe Thompson. Cabe destacar que no hemos hecho un \textit{armarStar} ni \textit{armarOpt}, esto se debe a que el primero sólo agrega una transición más con respecto a \textit{armarPlus}, y el segundo es un caso idéntico al \textit{armarOr} definiendo uno de los parámetros como un automata con transición lambda.
+\item En el caso del \textit{CONCAT} y \textit{OR} que pueden tener $n$ argumentos, hemos optado que el \textit{armarConcat} y el \textit{armarOr} sólo puedan ir armando de a dos autómatas y luego, al obtener el armado de ambos, buscar recurisvamente el autómata del siguiente argumento y repite el paso anterior sucesivamente.
+\end{itemize}
+
+
+\subsection{Explicación del armado de un automata para hallar su complemento:}
+Para esta función tuvimos un problema, ya que para hallar el complemento de un autómata necesitamos, para un estado y un alfabeto, saber su transición aunque ésta no exista. Para solucionar esto agregamos un estado \textit{"trampa"}, y nuestro algoritmo se encargará de generar las transiciones ausentes de nuestro autómata y llevarlas a este nuevo estado. Como sabemos este estado \textit{"trampa"} debe cumplir con su definición, no debe ser un estado final y tampoco se puede salir de él por medio de alguna transición. 
+
