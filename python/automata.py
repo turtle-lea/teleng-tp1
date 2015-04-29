@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 
+import sys
+import os
+
 def armar_automata(regpars):
 
 	if regpars.nombre == 'OPT':
@@ -198,23 +201,24 @@ def parsear_automata(filename):
 		#Leo el estado inicial
 		estado_inicial = (lines[2].split())[0]
 		estado_inicial = int(estado_inicial[1:len(estado_inicial)])
-		assert estado_inicial in estados
+		if not(estado_inicial in estados):
+			sys.stderr.write("El estado inicial no pertenece a los estados\n")
 
 		#Leo los estados finales
 		estados_finales = lines[3].split()
 		estados_finales = [int(e[1:len(e)]) for e in estados_finales]
 		for e in estados_finales:
-			assert e in estados
+			if not(e in estados):
+				sys.stderr.write("El estado final '%s' no pertenece a los estados\n" % str(e))
 
 		#Leo las transiciones
 		transiciones = []
 		for i in range(4,len(lines)):
 			t = lines[i].split()
 			t[0] = int((t[0])[1:len(t[0])])
-			assert t[0] in estados
-			assert t[1] in alfabeto
 			t[2] = int((t[2])[1:len(t[2])])
-			assert t[2] in estados
+			if (not(t[0] in estados) or not(t[1] in alfabeto) or not(t[2] in estados)):
+				sys.stderr.write("Transicion invalida de automata\n")
 			transiciones.append(t)
 
 		return Automata(estados,alfabeto,estado_inicial,estados_finales,transiciones)

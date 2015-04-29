@@ -1,6 +1,9 @@
 #  -*- coding: utf-8 -*-
 #!/usr/bin/python
 
+import sys
+import os
+
 def parse_regex(filename):
   f = open(filename, 'r')
   x = parse_regex_aux(f)
@@ -22,6 +25,8 @@ def parse_regex_aux(f):
     return Regex(operacion, '', argumentos)
   else:
     line = l.replace("\t", "")
+    if (len(line) == 0):
+      sys.stderr.write("Se esperaba un caracter, un espacio o el simbolo especial \\t\n")
     simbolo = line[0]
     if simbolo[0] == "\\" and line[1] == 't':
       simbolo = "\t"
