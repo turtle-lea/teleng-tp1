@@ -1,3 +1,14 @@
+\subsection{Parser de la regex}
+Las expresiones regulares están representadas por una clase a la cual llamamos Regex.
+Cada instancia tiene 3 atributos: 
+\begin{itemize}
+	\item nombre = ' OR, CONCAT, \ldots ,SIMOBOLO'
+	\item valor = 'x' en el caso en el que la regex representa un símbolo (con x perteneciente al listado de caracteres válido), ' ' en el resto de los casos.
+	\item argumentos = un arreglo con una única regex si la regex es unaria (PLUS, STAR), con \emph{n} regex para CONCAT y OR, o ' ' en el caso de los símbolos.
+\end{itemize}
+La función que parsea la regex: ''parsear\_regex'' se llama recursivamente por cada uno de los argumentos, manteniendo el estado del archivo
+
+
 \subsection{Explicación del armado del autómata finito:}
 Para realizar esta función nosotros partimos de un lenguaje regular parseado, el cual está explicado en la sección \textbf{Parseo de Regex}. A este mismo lo leeremos e iremos armando el autómata finito correspondiente.
 La forma de generar nuestro autómata finito es por medio del método de Thompson. Básicamente el algoritmo funciona de forma recursiva y lo detallaremos a continuacion:
