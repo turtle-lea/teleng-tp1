@@ -62,7 +62,7 @@ def escribir_archivo(automata, filename):
 		if i < len(automata.estados)-1 :
 			f.write('q')
 			f.write(str(automata.estados[i]))
-			f.write(' ')
+			f.write('\t')
 		if i == len(automata.estados)-1 :
 			f.write('q')
 			f.write(str(automata.estados[i]))
@@ -72,7 +72,7 @@ def escribir_archivo(automata, filename):
 	for i in range(0, len(automata.alfabeto)):
 		if (i < len(automata.alfabeto)-1) and (automata.alfabeto[i] != 'lambda') :
 			f.write(str(automata.alfabeto[i]))
-			f.write(' ')
+			f.write('\t')
 		if (i == len(automata.alfabeto)-1) and (automata.alfabeto[i] != 'lambda') :
 			f.write(str(automata.alfabeto[i]))
 
@@ -87,7 +87,7 @@ def escribir_archivo(automata, filename):
 		if i < len(automata.estados_finales)-1 :
 			f.write('q')
 			f.write(str(automata.estados_finales[i]))
-			f.write(' ')
+			f.write('\t')
 		if i == len(automata.estados_finales)-1 :
 			f.write('q')
 			f.write(str(automata.estados_finales[i]))
@@ -98,18 +98,18 @@ def escribir_archivo(automata, filename):
 		if i < len(automata.transiciones)-1 :
 			f.write('q')
 			f.write(str(automata.transiciones[i][0]))
-			f.write(' ')
+			f.write('\t')
 			f.write(str(automata.transiciones[i][1]))
-			f.write(' ')
+			f.write('\t')
 			f.write('q')
 			f.write(str(automata.transiciones[i][2]))
 			f.write('\n')
 		if i == len(automata.transiciones)-1 :
 			f.write('q')
 			f.write(str(automata.transiciones[i][0]))
-			f.write(' ')
+			f.write('\t')
 			f.write(str(automata.transiciones[i][1]))
-			f.write(' ')
+			f.write('\t')
 			f.write('q')
 			f.write(str(automata.transiciones[i][2]))
 
