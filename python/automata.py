@@ -139,6 +139,72 @@ def renombrarTransiciones(transiciones, estado, nuevoEstado):
 
 	return transiciones
 
+def interseccion(automata1, automata2):
+	inicial1 = automata1.estado_inicial
+	inicial2 = automata2.estado_inicial
+	finales1 = automata1.estados_finales
+	finales2 = automata2.estados_finales
+	alfabeto = []
+	for a1 in automata1.alfabeto:
+		for a2 in automata2.alfabeto:
+			if a1 == a2:
+				alfabeto.append(a1)
+	estados = []
+	for e1 in automata1.estados:
+		for e2 in automata2.estados:
+			estados.append([e1,e2])
+	transiciones = []
+	for t1 in automata1.transiciones:
+		for t2 in automata2.transiciones:
+			if t1[1] == t2[1]:
+				transiciones.append([[t1[0],t2[0]],t1[1],[t1[2],t2[2]]])
+	inicial = [inicial1,inicial2]
+	finales = []
+	for f1 in finales1:
+		for f2 in finales2:
+			finales.append([f1,f2])
+
+	a = Automata(estados, alfabeto, inicial, finales, transiciones)
+	a.renombrar_estados()
+	return a
+
+
+def parsear_automata(filename):
+	with open(filename,'r') as f:
+		lines = f.readlines()
+
+		#Leo los estados
+		estados = lines[0].split()
+		estados = [int(e[1:len(e)]) for e in estados]
+
+		#Leo el alfabeto
+		alfabeto = lines[1].split()
+
+		#Leo el estado inicial
+		estado_inicial = (lines[2].split())[0]
+		estado_inicial = int(estado_inicial[1:len(estado_inicial)])
+		assert estado_inicial in estados
+
+		#Leo los estados finales
+		estados_finales = lines[3].split()
+		estados_finales = [int(e[1:len(e)]) for e in estados_finales]
+		for e in estados_finales:
+			assert e in estados
+
+		#Leo las transiciones
+		transiciones = []
+		for i in range(4,len(lines)):
+			t = lines[i].split()
+			t[0] = int((t[0])[1:len(t[0])])
+			assert t[0] in estados
+			assert t[1] in alfabeto
+			t[2] = int((t[2])[1:len(t[2])])
+			assert t[2] in estados
+			transiciones.append(t)
+
+		return Automata(estados,alfabeto,estado_inicial,estados_finales,transiciones)
+
+
 class Automata:
   def __init__(self, estados, alfabeto, estado_inicial, estados_finales, transiciones):
     self.estados = estados
@@ -196,7 +262,10 @@ class Automata:
               if not(nueva_t in nuevas_transiciones):
                 nuevas_transiciones.append(nueva_t)
 
-    return Automata(self.estados, self.alfabeto, self.estado_inicial, finales, nuevas_transiciones)
+    alfabeto = list(self.alfabeto)
+    if 'lambda' in alfabeto:
+    	alfabeto.remove('lambda')
+    return Automata(self.estados, alfabeto, self.estado_inicial, finales, nuevas_transiciones)
 
   ##### Metodos auxiliar para transformar un AFND en AFD
 
@@ -221,6 +290,28 @@ class Automata:
   	es = list(set(es))
   	return es
 
+  def renombrar_estados(self):
+  	nombre_actual = 0
+  	for i in range(0, len(self.estados)):
+  		e = self.estados[i]
+  		nombre_viejo = e
+  		if self.estado_inicial == e:
+  			self.estado_inicial = nombre_actual
+  		if e in self.estados_finales:
+  			self.estados_finales.remove(e)
+  			self.estados_finales.append(nombre_actual)
+  		for j in range(0, len(self.transiciones)):
+  			t = self.transiciones[j]
+  			nueva_t = list(t)
+  			if nueva_t[0] == nombre_viejo:
+  				nueva_t[0] = nombre_actual
+  			if nueva_t[2] == nombre_viejo:
+  				nueva_t[2] = nombre_actual
+  			if t != nueva_t:
+  				self.transiciones[j] = nueva_t
+  		self.estados[i] = nombre_actual
+  		nombre_actual += 1
+
   def determinizar_automata(self):
   	inicial = [self.estado_inicial]
   	faltan_agregar = [inicial]
@@ -237,24 +328,44 @@ class Automata:
   				faltan_agregar.append(estado)
   	fs = set(self.estados_finales)
   	finales = [e for e in estados if len(fs.intersection(set(e))) > 0]
-  	return Automata(estados, self.alfabeto, inicial, finales, transiciones)
+  	a = Automata(estados, self.alfabeto, inicial, finales, transiciones)
+  	a.renombrar_estados()
+  	return a
 
   def crear_estado_trampa(self):
-        return max(self.estados)+1	
+		return max(self.estados)+1
 
   def completar_transiciones(self,estado_trampa):
-        estados = self.estados + [estado_trampa]	
-        transiciones_agregadas = []
-        for e in estados:
-                for s in self.alfabeto:
-                        if len([t for t in self.transiciones if (t[0] == e) and (t[1] == s) ]) == 0:
-                                transiciones_agregadas.append([e,s,estado_trampa])
-        return transiciones_agregadas
-			
+		estados = self.estados + [estado_trampa]
+		transiciones_agregadas = []
+		for e in estados:
+			for s in self.alfabeto:
+				if len([t for t in self.transiciones if (t[0] == e) and (t[1] == s) ]) == 0:
+					transiciones_agregadas.append([e,s,estado_trampa])
+		return transiciones_agregadas
 
-def complemento(self):
-        estado_trampa = self.crear_estado_trampa()
-        transiciones_a_agregar = self.completar_transiciones(estado_trampa)
-        nuevos_finales = set(self.estados+[estado_trampa]) - set(self.estados_finales)
-        nuevos_finales = list(nuevos_finales)
-        return Automata(self.estados+[estado_trampa], self.alfabeto, self.estado_inicial, nuevos_finales, self.transiciones+transiciones_a_agregar)
+
+  def complemento(self):
+		estado_trampa = self.crear_estado_trampa()
+		transiciones_a_agregar = self.completar_transiciones(estado_trampa)
+		nuevos_finales = set(self.estados+[estado_trampa]) - set(self.estados_finales)
+		nuevos_finales = list(nuevos_finales)
+		return Automata(self.estados+[estado_trampa], self.alfabeto, self.estado_inicial, nuevos_finales, self.transiciones+transiciones_a_agregar)
+
+def pertenece_al_lenguaje_automata(self, cadena):
+	recorrer_automata  = self.estado_inicial
+	i = 0
+	j = 0
+	while (i < len(cadena)) and (j < len(self.transiciones)):
+		if (self.transiciones[j][0] == recorrer_automata) and (self.transiciones[j][1] == cadena[i]):
+			i=i+1
+			recorrer_automata = self.transiciones[j][2]
+			j=-1
+		j=j+1
+
+	if i == len(cadena):
+		if recorrer_automata in self.estados_finales:
+			return True
+
+	return False
+>>>>>>> 88ae6d9d32039991942e60919935a097d9004d2c

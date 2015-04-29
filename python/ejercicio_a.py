@@ -6,11 +6,12 @@ from automata import *
 
 def afd_minimo(archivo_regex, archivo_automata):
         regpars = parse_regex(archivo_regex)
-        automata = armar_automata(regpars)
-        #automata = automata.remover_transiciones_lambda()
-        #escribir_archivo(automata, archivo_automata)
+		automata = armar_automata(regpars)
+		automata = automata.remover_transiciones_lambda()
+		automata = automata.determinizar_automata()
+		escribir_archivo(automata, archivo_automata)
 
-        return automata
+	return automata
 
 
 #automata debe ser deterministico
@@ -222,22 +223,6 @@ def choose_representatives(partition, state):
 
     return index
 
-#def choose_representatives_by_dest(partition, symbol, transitions, state):
-#    dest_state = transitions[(state, symbol)]
-#    index = 0
-#    found = False
-#    while index < len(partition) and not(found):
-#        subset = partition[index]
-#        if not(dest_state in subset):
-#            index += 1
-#        else:
-#            found = True
-
-#    if not(found):
-#        index = -1
-
-#    return index
-
 
 def partition_transitions(partition, alphabet, transitions):
     new_transitions = {}
@@ -264,69 +249,66 @@ def partition_transitions(partition, alphabet, transitions):
     return new_transitions
 
 
-
-
-
-
 def escribir_archivo(automata, filename):
-        f = open(filename, 'w')
+	f = open(filename, 'w')
 
-        for i in range(0, len(automata.estados)):
-                if i < len(automata.estados)-1 :
-                        f.write('q')
-                        f.write(str(automata.estados[i]))
-                        f.write(' ')
-                if i == len(automata.estados)-1 :
-                        f.write('q')
-                        f.write(str(automata.estados[i]))
-        f.write('\n')
+	for i in range(0, len(automata.estados)):
+		if i < len(automata.estados)-1 :
+			f.write('q')
+			f.write(str(automata.estados[i]))
+			f.write('\t')
+		if i == len(automata.estados)-1 :
+			f.write('q')
+			f.write(str(automata.estados[i]))
 
-        for i in range(0, len(automata.alfabeto)):
-                if (i < len(automata.alfabeto)-1) and (automata.alfabeto[i] != 'lambda') :
-                        f.write(str(automata.alfabeto[i]))
-                        f.write(' ')
-                if (i == len(automata.alfabeto)-1) and (automata.alfabeto[i] != 'lambda') :
-                        f.write(str(automata.alfabeto[i]))
+	f.write('\n')
 
-        f.write('\n')
+	for i in range(0, len(automata.alfabeto)):
+		if (i < len(automata.alfabeto)-1) and (automata.alfabeto[i] != 'lambda') :
+			f.write(str(automata.alfabeto[i]))
+			f.write('\t')
+		if (i == len(automata.alfabeto)-1) and (automata.alfabeto[i] != 'lambda') :
+			f.write(str(automata.alfabeto[i]))
 
-        f.write('q')
-        f.write(str(automata.estado_inicial))
+	f.write('\n')
 
-        f.write('\n')
+	f.write('q')
+	f.write(str(automata.estado_inicial))
 
-        for i in range(0, len(automata.estados_finales)):
-                if i < len(automata.estados_finales)-1 :
-                        f.write('q')
-                        f.write(str(automata.estados_finales[i]))
-                        f.write(' ')
-                if i == len(automata.estados_finales)-1 :
-                        f.write('q')
-                        f.write(str(automata.estados_finales[i]))
+	f.write('\n')
 
-        f.write('\n')
+	for i in range(0, len(automata.estados_finales)):
+		if i < len(automata.estados_finales)-1 :
+			f.write('q')
+			f.write(str(automata.estados_finales[i]))
+			f.write('\t')
+		if i == len(automata.estados_finales)-1 :
+			f.write('q')
+			f.write(str(automata.estados_finales[i]))
 
-        for i in range(0, len(automata.transiciones)):
-                if i < len(automata.transiciones)-1 :
-                        f.write('q')
-                        f.write(str(automata.transiciones[i][0]))
-                        f.write(' ')
-                        f.write(str(automata.transiciones[i][1]))
-                        f.write(' ')
-                        f.write('q')
-                        f.write(str(automata.transiciones[i][2]))
-                        f.write('\n')
-                if i == len(automata.transiciones)-1 :
-                        f.write('q')
-                        f.write(str(automata.transiciones[i][0]))
-                        f.write(' ')
-                        f.write(str(automata.transiciones[i][1]))
-                        f.write(' ')
-                        f.write('q')
-                        f.write(str(automata.transiciones[i][2]))
+	f.write('\n')
 
-        f.close()
+	for i in range(0, len(automata.transiciones)):
+		if i < len(automata.transiciones)-1 :
+			f.write('q')
+			f.write(str(automata.transiciones[i][0]))
+			f.write('\t')
+			f.write(str(automata.transiciones[i][1]))
+			f.write('\t')
+			f.write('q')
+			f.write(str(automata.transiciones[i][2]))
+			f.write('\n')
+		if i == len(automata.transiciones)-1 :
+			f.write('q')
+			f.write(str(automata.transiciones[i][0]))
+			f.write('\t')
+			f.write(str(automata.transiciones[i][1]))
+			f.write('\t')
+			f.write('q')
+			f.write(str(automata.transiciones[i][2]))
 
-        return 0
+	f.close()
+
+	return 0
 
 
