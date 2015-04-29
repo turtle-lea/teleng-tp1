@@ -333,4 +333,3 @@ def escribir_archivo(automata, filename):
 
 	return 0
 
-
