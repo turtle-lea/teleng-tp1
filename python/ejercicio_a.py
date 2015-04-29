@@ -10,7 +10,7 @@ def afd_minimo(archivo_regex, archivo_automata):
 	automata = armar_automata(regpars)
 	automata = automata.remover_transiciones_lambda()
 	automata = automata.determinizar_automata()
-	#escribir_archivo(automata, archivo_automata)
+	escribir_archivo(automata, archivo_automata)
 
 	return automata
 

@@ -153,7 +153,7 @@ def renombrarTransiciones(transiciones, estado, nuevoEstado):
 			transiciones[i][2] = nuevoEstado
 
 	return transiciones
-	
+
 def interseccion(automata1, automata2):
 	inicial1 = automata1.estado_inicial
 	inicial2 = automata2.estado_inicial
@@ -178,10 +178,47 @@ def interseccion(automata1, automata2):
 	for f1 in finales1:
 		for f2 in finales2:
 			finales.append([f1,f2])
-	
+
 	a.renombrar_estados()
-	
+
 	return a
+
+
+def parsear_automata(filename):
+	with open(filename,'r') as f:
+		lines = f.readlines()
+
+		#Leo los estados
+		estados = lines[0].split()
+		estados = [int(e[1:len(e)]) for e in estados]
+
+		#Leo el alfabeto
+		alfabeto = lines[1].split()
+
+		#Leo el estado inicial
+		estado_inicial = (lines[2].split())[0]
+		estado_inicial = int(estado_inicial[1:len(estado_inicial)])
+		assert estado_inicial in estados
+
+		#Leo los estados finales
+		estados_finales = lines[3].split()
+		estados_finales = [int(e[1:len(e)]) for e in estados_finales]
+		for e in estados_finales:
+			assert e in estados
+
+		#Leo las transiciones
+		transiciones = []
+		for i in range(4,len(lines)):
+			t = lines[i].split()
+			t[0] = int((t[0])[1:len(t[0])])
+			assert t[0] in estados
+			assert t[1] in alfabeto
+			t[2] = int((t[2])[1:len(t[2])])
+			assert t[2] in estados
+			transiciones.append(t)
+
+		return Automata(estados,alfabeto,estado_inicial,estados_finales,transiciones)
+
 
 class Automata:
   def __init__(self, estados, alfabeto, estado_inicial, estados_finales, transiciones):
@@ -240,7 +277,10 @@ class Automata:
               if not(nueva_t in nuevas_transiciones):
                 nuevas_transiciones.append(nueva_t)
 
-    return Automata(self.estados, self.alfabeto, self.estado_inicial, finales, nuevas_transiciones)
+    alfabeto = list(self.alfabeto)
+    if 'lambda' in alfabeto:
+    	alfabeto.remove('lambda')
+    return Automata(self.estados, alfabeto, self.estado_inicial, finales, nuevas_transiciones)
 
   ##### Metodos auxiliar para transformar un AFND en AFD
 
@@ -330,16 +370,16 @@ class Automata:
 def pertenece_al_lenguaje_automata(self, cadena):
 	recorrer_automata  = self.estado_inicial
 	i = 0
-	j = 0	
+	j = 0
 	while (i < len(cadena)) and (j < len(self.transiciones)):
 		if (self.transiciones[j][0] == recorrer_automata) and (self.transiciones[j][1] == cadena[i]):
 			i=i+1
 			recorrer_automata = self.transiciones[j][2]
 			j=-1
 		j=j+1
-		
+
 	if i == len(cadena):
 		if recorrer_automata in self.estados_finales:
 			return True
-			
-	return False 
+
+	return False
