@@ -179,7 +179,9 @@ def interseccion(automata1, automata2):
 		for f2 in finales2:
 			finales.append([f1,f2])
 	
-	return Automata(estados, alfabeto, inicial, finales, transiciones)
+	a.renombrar_estados()
+	
+	return a
 
 class Automata:
   def __init__(self, estados, alfabeto, estado_inicial, estados_finales, transiciones):
@@ -325,19 +327,19 @@ class Automata:
 		nuevos_finales = list(nuevos_finales)
 		return Automata(self.estados+[estado_trampa], self.alfabeto, self.estado_inicial, nuevos_finales, self.transiciones+transiciones_a_agregar)
 
-def pertenece_al_lenguaje(self, cadena):
+def pertenece_al_lenguaje_automata(self, cadena):
 	recorrer_automata  = self.estado_inicial
 	i = 0
 	j = 0	
-	while (i < len(cadena)) or (j < len(self.transiciones)):
+	while (i < len(cadena)) and (j < len(self.transiciones)):
 		if (self.transiciones[j][0] == recorrer_automata) and (self.transiciones[j][1] == cadena[i]):
 			i=i+1
-			recorrer_automata = t[2]
+			recorrer_automata = self.transiciones[j][2]
 			j=-1
 		j=j+1
 		
 	if i == len(cadena):
 		if recorrer_automata in self.estados_finales:
-			return true
+			return True
 			
-	return false  
+	return False 

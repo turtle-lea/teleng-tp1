@@ -75,6 +75,13 @@ inicial13 = 0
 transiciones13 = [ [0,'c',0], [0,'b',1], [1,'b',0] ]
 automata13 = Automata(estados13, alfabeto13, inicial13, finales13, transiciones13)
 
+estados14 = [0,1]
+alfabeto14 = ['b','\t']
+finales14 = [1]
+inicial14 = 0
+transiciones14 = [ [0,'\t',0], [0,'b',1], [1,'b',0] ]
+automata14 = Automata(estados14, alfabeto14, inicial14, finales14, transiciones14)
+
 automata9 = afd_minimo("ejemplo1.txt","ejemplo1output.txt")
 automata10 = afd_minimo("ejemplo2.txt","ejemplo1output.txt")
 automata11 = afd_minimo("ejemplo2.txt","ejemplo1output.txt")
