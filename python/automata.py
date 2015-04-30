@@ -58,7 +58,7 @@ def armarConcat(automata1, lamb, automata2):
         estados_finales_A1 = automata1.estados_finales
         estado_inicial_A2 = automata2.estado_inicial
 
-        automata1 = unirAutomatas(automata1,automata2, 'CONCAT')        
+        automata1 = unirAutomatas(automata1,automata2, 'CONCAT')
         for i in range(0,len(estados_finales_A1)):
                 automata1.transiciones.append([estados_finales_A1[i], lamb,estado_inicial_A2])
 
@@ -170,9 +170,8 @@ def interseccion_automatas(automata1, automata2):
 	a = Automata(estados, alfabeto, inicial, finales, transiciones)
 	a.renombrar_estados()
 	return a
-	
+
 def escribir_archivo(automata, f):
-	
 	for i in range(0, len(automata.estados)):
 		if i < len(automata.estados)-1 :
 			f.write('q')
@@ -432,13 +431,14 @@ class Automata:
     i = 0
     j = 0
     while (i < len(cadena)) and (j < len(self.transiciones)):
-        if (self.transiciones[j][0] == recorrer_automata) and (self.transiciones[j][1] == cadena[i]):
-            i=i+1
-            recorrer_automata = self.transiciones[j][2]
-            j=-1
-        j=j+1
+      if (self.transiciones[j][0] == recorrer_automata) and (self.transiciones[j][1] == cadena[i]):
+        i=i+1
+        recorrer_automata = self.transiciones[j][2]
+        j=-1
+      j=j+1
 
-    if i == len(cadena):
+      if i == len(cadena):
         if recorrer_automata in self.estados_finales:
-            return True
+          return True
+
     return False
