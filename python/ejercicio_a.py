@@ -227,7 +227,7 @@ def choose_representatives(partition, state, symbol, transitions):
     found = False
     while index < len(partition) and not(found):
         subset = partition[index]
-        print(subset)
+        #print(subset)
         #Tomamos solo un elemento representativo
         representative = subset[0]
         #print(representative)
