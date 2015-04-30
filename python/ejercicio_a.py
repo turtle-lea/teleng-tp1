@@ -230,10 +230,10 @@ def choose_representatives(partition, state, symbol, transitions):
         print(subset)
         #Tomamos solo un elemento representativo
         representative = subset[0]
-        print(representative)
-        print(transitions)
-        print(state)
-        print(transitions[(state,symbol)])
+        #print(representative)
+        #print(transitions)
+        #print(state)
+        #print(transitions[(state,symbol)])
         if (representative,symbol) in transitions:
             if not(transitions[(state,symbol)] == transitions[(representative,symbol)]):
                 index += 1
