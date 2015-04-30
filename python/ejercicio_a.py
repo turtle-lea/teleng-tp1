@@ -53,11 +53,11 @@ def minimizar_afd(automata):
                 #print (new_subset)
                 new_subset = eliminate_unreachable_and_cyclic_states(automata.estado_inicial, new_subset, automata.alfabeto, transitions, automata.estados, automata.estados_finales)
                 #print (new_subset)
-                
+
                 if len(new_subset) > 0:
                         partition.append(new_subset)
 
-    
+
         #Generate the reduce automat transitions
         transitions_dicc = partition_transitions(partition, automata.alfabeto, transitions)
         new_transitions = []
@@ -74,7 +74,7 @@ def minimizar_afd(automata):
                 if not(dest_state in new_states):
                     new_states.append(dest_state)
         new_states.sort()
-        
+
         #Generate min-automat init state
         new_init_state = representative_set(partition, automata.estado_inicial)
 
@@ -102,21 +102,21 @@ def nueva_particion (partition, alphabet, transitions):
             partition = new_partition
             index = 0
             condition2 = (index < len(partition))
-            
-            while condition2:    
+
+            while condition2:
                 subset = partition[index]
                 prefix_partition = partition[0:index]
                 suffix_partition = partition[index+1:len(partition)]
                 disjoint_subset  = disjoin(prefix_partition, subset, suffix_partition, symbol, transitions)
                 index += 1
                 condition2 = ([subset] == disjoint_subset and index < len(partition))
-                
+
             new_partition = prefix_partition + disjoint_subset + suffix_partition
             condition1 = not (new_partition == partition)
             #print("partition: " + str(partition))
             #print("new_partition: " + str(new_partition))
 
-       
+
 
     return new_partition
 
@@ -135,7 +135,7 @@ def disjoin(prefix_set, subset, suffix_set, symbol, transitions):
         option = 0
         representative_set_index = -1
 
-        
+
         if (state, symbol) in transitions:
                 while (option < 3) and representative_set_index == -1:
                     if option == 0:
@@ -152,7 +152,7 @@ def disjoin(prefix_set, subset, suffix_set, symbol, transitions):
                         option += 1
         else:
                 representative_set_index = -1
-                        
+
 
         if representative_set_index == -1:
             #No hay un subconjunto en el prefijo, el sufijo o la nueva particion de subset
@@ -227,7 +227,6 @@ def choose_representatives(partition, state, symbol, transitions):
     found = False
     while index < len(partition) and not(found):
         subset = partition[index]
-        print(subset)
         #Tomamos solo un elemento representativo
         representative = subset[0]
         #print(representative)
@@ -245,7 +244,7 @@ def choose_representatives(partition, state, symbol, transitions):
         index = -1
 
     return index
-	
+
 #The representative of a disjoint set is the disjoint set index in the
 #new partition
 def representative_set(partition, state):
