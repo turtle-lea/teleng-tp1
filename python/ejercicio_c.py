@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 
-from regex import *
 from automata import *
-from ejemplos_automata import *
+
 
 def grafo(archivo_automata, archivo_dot):
 	automata = parsear_automata(archivo_automata)
 	escribir_archivo_dot(archivo_dot, automata)
+	return 0
 
 def transiciones_agrupadas(automata):
 	group = {}
@@ -20,13 +20,15 @@ def transiciones_agrupadas(automata):
 			group[key] = value
 		value = group[key]
 		if not(t[1] in value):
-			value.append(t[1])
+			simbolo = t[1]
+			if (simbolo == '\\t'):
+				simbolo = "\\\\t"
+			value.append(simbolo)
 			group[key] = value
 	assert len([ t for e in group.keys() for t in group[e]]) == len(automata.transiciones)
 	return group
 
-def escribir_archivo(archivo_dot, automata):
-	f = open(archivo_dot,'w')
+def escribir_archivo_dot(f, automata):
 	f.write("strict digraph {\n")
 	f.write("\t rankdir=LR\n")
 	f.write("\t node [shape = none, label = \" \", width = 0, height = 0]; qd;\n")
@@ -46,3 +48,4 @@ def escribir_archivo(archivo_dot, automata):
 
 	f.write("\t qd -> q"+ str(automata.estado_inicial) + "\n")
 	f.write("}")
+	f.close()

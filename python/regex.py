@@ -4,8 +4,7 @@
 import sys
 import os
 
-def parse_regex(filename):
-  f = open(filename, 'r')
+def parse_regex(f):
   x = parse_regex_aux(f)
   f.close()
   return x

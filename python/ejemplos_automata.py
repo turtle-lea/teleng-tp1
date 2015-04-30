@@ -30,6 +30,20 @@ automata5 = Automata(estados,alfabeto,inicial,finales5,transiciones5)
 automata6 = automata5.remover_transiciones_lambda()
 automata7 = automata6.determinizar_automata()
 
+#estados2 = [0,1,2,3]
+#alfabeto2 = ['a','b']
+#finales2 = [3]
+#estado_inicial2 = 0
+#transiciones2 = [[0,'a',1],[0,'b',2],[1,'b',3]]
+#automata2 = Automata(estados2, alfabeto2, estado_inicial2, finales2, transiciones2)
+
+estados2 = [0,1,2,3,4]
+alfabeto2 = ['a','b']
+finales2 = [3]
+estado_inicial2 = 0
+transiciones2 = [[0,'a',1],[0,'b',2],[1,'b',3],[1,'a',2],[3,'a',2],[2,'a',4],[4,'b',2]]
+automata2 = Automata(estados2, alfabeto2, estado_inicial2, finales2, transiciones2)
+
 estados29 = [0,1,2]
 alfabeto29 = ['a','b']
 finales29 = [2]
@@ -82,6 +96,22 @@ inicial14 = 0
 transiciones14 = [ [0,'\t',0], [0,'b',1], [1,'b',0] ]
 automata14 = Automata(estados14, alfabeto14, inicial14, finales14, transiciones14)
 
-automata9 = afd_minimo("ejemplo1.txt","ejemplo1output.txt")
-automata10 = afd_minimo("ejemplo2.txt","ejemplo1output.txt")
-automata11 = afd_minimo("ejemplo2.txt","ejemplo1output.txt")
+#automata9 = afd_minimo("ejemplo1.txt","ejemplo1output.txt")
+#automata10 = afd_minimo("ejemplo2.txt","ejemplo1output.txt")
+#automata11 = afd_minimo("ejemplo2.txt","ejemplo1output.txt")
+
+def test7():
+    transiciones = []
+    transiciones.append([1, 'a', 2])
+    transiciones.append([2, 'b', 3])
+    transiciones.append([3, 'c', 4])
+    transiciones.append([4, 'd', 5])
+    transiciones.append([5, 'e', 5])
+    alfabeto = ["a", "b", "c", "d", "e"]
+    estados = [1,2,3,4,5]
+    estados_finales = [4]
+    estado_inicial = 1
+
+    automat = Automata (estados, alfabeto, estado_inicial, estados_finales, transiciones)
+    min_afd = minimizar_afd(automat)
+    return min_afd

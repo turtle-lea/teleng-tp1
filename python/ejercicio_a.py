@@ -7,10 +7,13 @@ from automata import *
 def afd_minimo(archivo_regex, archivo_automata):
         regpars = parse_regex(archivo_regex)
         automata = armar_automata(regpars)
+        ### AFND-lambda ---> AFND
         automata = automata.remover_transiciones_lambda()
+        ### AFND ---> AFD
         automata = automata.determinizar_automata()
+        automata = minimizar_afd(automata)
         escribir_archivo(automata, archivo_automata)
-        return automata
+        return 0
 
 
 #automata debe ser deterministico
@@ -47,9 +50,8 @@ def minimizar_afd(automata):
         for subset in new_partition:
                 #print (subset)
                 new_subset = eliminate_death_states(subset, automata.alfabeto, transitions, automata.estados_finales)
-                #print (new_subset)
-                new_subset = eliminate_unreachable_states(automata.estado_inicial, new_subset, automata.alfabeto, transitions, automata.estados)
-                #print (new_subset)
+				#print (new_subset)
+                new_subset = eliminate_unreachable_and_ciclic_states(automata.estado_inicial, new_subset, automata.alfabeto, transitions, automata.estados, automata.estados_finales)
                 
                 if len(new_subset) > 0:
                         partition.append(new_subset)
@@ -199,13 +201,17 @@ def eliminate_death_states(subset, alphabet, transitions, terminal_states):
 
     return result
 
-def eliminate_unreachable_states(init_state, subset, alphabet, transitions, states):
+def eliminate_unreachable_and_ciclic_states(init_state, subset, alphabet, transitions, states, terminal_states):
     result = []
     while len(subset) > 0:
         state = subset.pop(0)
         if n_recheable(init_state, state, alphabet, transitions, len(states)):
-            result.append(state)
+            ##Si es alcanzable, me fijo si desde ese nodo puedo llegar a algun terminal
+            for terminal in terminal_states:
+                if n_recheable(state, terminal, alphabet, transitions, len(states)) and not (state in result):
+                    result.append(state)
     return result
+
 
 
 def is_death_state(state, alphabet, transitions, terminal_states):

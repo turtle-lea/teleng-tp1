@@ -142,7 +142,7 @@ def renombrarTransiciones(transiciones, estado, nuevoEstado):
 
 	return transiciones
 
-def interseccion(automata1, automata2):
+def interseccion_automatas(automata1, automata2):
 	inicial1 = automata1.estado_inicial
 	inicial2 = automata2.estado_inicial
 	finales1 = automata1.estados_finales
@@ -171,9 +171,8 @@ def interseccion(automata1, automata2):
 	a.renombrar_estados()
 	return a
 	
-def escribir_archivo(automata, filename):
-	f = open(filename, 'w')
-
+def escribir_archivo(automata, f):
+	
 	for i in range(0, len(automata.estados)):
 		if i < len(automata.estados)-1 :
 			f.write('q')
@@ -187,7 +186,10 @@ def escribir_archivo(automata, filename):
 
 	for i in range(0, len(automata.alfabeto)):
 		if (i < len(automata.alfabeto)-1) and (automata.alfabeto[i] != 'lambda') :
-			f.write(str(automata.alfabeto[i]))
+			if str(automata.alfabeto[i]) == '\t':
+				f.write('\\t')
+			else:
+				f.write(str(automata.alfabeto[i]))
 			f.write('\t')
 		if (i == len(automata.alfabeto)-1) and (automata.alfabeto[i] != 'lambda') :
 			f.write(str(automata.alfabeto[i]))
@@ -215,7 +217,10 @@ def escribir_archivo(automata, filename):
 			f.write('q')
 			f.write(str(automata.transiciones[i][0]))
 			f.write('\t')
-			f.write(str(automata.transiciones[i][1]))
+			if str(automata.transiciones[i][1]) == '\t':
+				f.write('\\t')
+			else:
+				f.write(str(automata.transiciones[i][1]))
 			f.write('\t')
 			f.write('q')
 			f.write(str(automata.transiciones[i][2]))
@@ -224,7 +229,10 @@ def escribir_archivo(automata, filename):
 			f.write('q')
 			f.write(str(automata.transiciones[i][0]))
 			f.write('\t')
-			f.write(str(automata.transiciones[i][1]))
+			if str(automata.transiciones[i][1]) == '\t':
+				f.write('\\t')
+			else:
+				f.write(str(automata.transiciones[i][1]))
 			f.write('\t')
 			f.write('q')
 			f.write(str(automata.transiciones[i][2]))
@@ -235,41 +243,41 @@ def escribir_archivo(automata, filename):
 
 
 
-def parsear_automata(filename):
-	with open(filename,'r') as f:
-		lines = f.readlines()
+def parsear_automata(f):
+	lines = f.readlines()
 
-		#Leo los estados
-		estados = lines[0].split()
-		estados = [int(e[1:len(e)]) for e in estados]
+	#Leo los estados
+	estados = lines[0].split()
+	estados = [int(e[1:len(e)]) for e in estados]
 
-		#Leo el alfabeto
-		alfabeto = lines[1].split()
+	#Leo el alfabeto
+	alfabeto = lines[1].split()
 
-		#Leo el estado inicial
-		estado_inicial = (lines[2].split())[0]
-		estado_inicial = int(estado_inicial[1:len(estado_inicial)])
-		if not(estado_inicial in estados):
-			sys.stderr.write("El estado inicial no pertenece a los estados\n")
+	#Leo el estado inicial
+	estado_inicial = (lines[2].split())[0]
+	estado_inicial = int(estado_inicial[1:len(estado_inicial)])
+	if not(estado_inicial in estados):
+		sys.stderr.write("El estado inicial no pertenece a los estados\n")
 
-		#Leo los estados finales
-		estados_finales = lines[3].split()
-		estados_finales = [int(e[1:len(e)]) for e in estados_finales]
-		for e in estados_finales:
-			if not(e in estados):
-				sys.stderr.write("El estado final '%s' no pertenece a los estados\n" % str(e))
+	#Leo los estados finales
+	estados_finales = lines[3].split()
+	estados_finales = [int(e[1:len(e)]) for e in estados_finales]
+	for e in estados_finales:
+		if not(e in estados):
+			sys.stderr.write("El estado final '%s' no pertenece a los estados\n" % str(e))
 
-		#Leo las transiciones
-		transiciones = []
-		for i in range(4,len(lines)):
-			t = lines[i].split()
-			t[0] = int((t[0])[1:len(t[0])])
-			t[2] = int((t[2])[1:len(t[2])])
-			if (not(t[0] in estados) or not(t[1] in alfabeto) or not(t[2] in estados)):
-				sys.stderr.write("Transicion invalida de automata\n")
-			transiciones.append(t)
+	#Leo las transiciones
+	transiciones = []
+	for i in range(4,len(lines)):
+		t = lines[i].split()
+		t[0] = int((t[0])[1:len(t[0])])
+		t[2] = int((t[2])[1:len(t[2])])
+		if (not(t[0] in estados) or not(t[1] in alfabeto) or not(t[2] in estados)):
+			sys.stderr.write("Transicion invalida de automata\n")
+		transiciones.append(t)
 
-		return Automata(estados,alfabeto,estado_inicial,estados_finales,transiciones)
+	f.close()
+	return Automata(estados,alfabeto,estado_inicial,estados_finales,transiciones)
 
 
 class Automata:
@@ -419,19 +427,18 @@ class Automata:
         nuevos_finales = list(nuevos_finales)
         return Automata(self.estados+[estado_trampa], self.alfabeto, self.estado_inicial, nuevos_finales, self.transiciones+transiciones_a_agregar)
 
-def pertenece_al_lenguaje_automata(self, cadena):
-	recorrer_automata  = self.estado_inicial
-	i = 0
-	j = 0
-	while (i < len(cadena)) and (j < len(self.transiciones)):
-		if (self.transiciones[j][0] == recorrer_automata) and (self.transiciones[j][1] == cadena[i]):
-			i=i+1
-			recorrer_automata = self.transiciones[j][2]
-			j=-1
-		j=j+1
+  def pertenece_al_lenguaje(self, cadena):
+    recorrer_automata  = self.estado_inicial
+    i = 0
+    j = 0
+    while (i < len(cadena)) and (j < len(self.transiciones)):
+        if (self.transiciones[j][0] == recorrer_automata) and (self.transiciones[j][1] == cadena[i]):
+            i=i+1
+            recorrer_automata = self.transiciones[j][2]
+            j=-1
+        j=j+1
 
-	if i == len(cadena):
-		if recorrer_automata in self.estados_finales:
-			return True
-
-	return False
+    if i == len(cadena):
+        if recorrer_automata in self.estados_finales:
+            return True
+    return False
