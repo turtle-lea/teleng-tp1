@@ -251,6 +251,9 @@ def parsear_automata(f):
 
 	#Leo el alfabeto
 	alfabeto = lines[1].split()
+	for i in range(0,len(alfabeto)):
+		if alfabeto[i] == "\\t":
+			alfabeto[i] = "\t"
 
 	#Leo el estado inicial
 	estado_inicial = (lines[2].split())[0]
@@ -271,7 +274,9 @@ def parsear_automata(f):
 		t = lines[i].split()
 		t[0] = int((t[0])[1:len(t[0])])
 		t[2] = int((t[2])[1:len(t[2])])
-		if (not(t[0] in estados) or not(t[1] in alfabeto) or not(t[2] in estados)):
+		if t[1] == "\\t":
+			t[1] = "\t"
+		if (not(t[0] in estados) or not(t[2] in estados)):
 			sys.stderr.write("Transicion invalida de automata\n")
 		transiciones.append(t)
 
