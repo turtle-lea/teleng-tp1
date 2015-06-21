@@ -342,6 +342,50 @@ class Automata:
     a = Automata(estados, self.alfabeto, estado_inicial, estados_finales, transiciones)
     return a
 
+  def minimizar_afd_2(self):
+    print "Hola"
+    finales = frozenset(self.estados_finales)
+    no_finales = frozenset([e for e in self.estados if (e not in self.estados_finales)])
+    particion_clases = set([no_finales, finales])
+    nueva_particion_clases = self.nueva_particion(particion_clases)
+    while(particion_clases != nueva_particion_clases):
+      particion_clases = nueva_particion_clases
+      nueva_particion_clases = self.nueva_particion(particion_clases)
+    print nueva_particion_clases
+    #return armar_automata(particion_clases, self)
+
+  def destino(self, origen, label):
+    return [t[2] for t in self.transiciones if (t[0] == origen) and (t[1] == label)][0]
+
+  def clase_que_contiene(self, estado, particion_clases):
+    res = set([])
+    for clase in particion_clases:
+      if estado in clase:
+        res = clase
+    return res
+
+  def no_pertenece_a_ninguna(self, estado, particion_clases):
+    return len(self.clase_que_contiene(estado, particion_clases)) == 0
+
+  def nueva_particion(self, particion_clases):
+    nueva_particion = set([])
+    for clase in particion_clases:
+      t = {}
+      for estado in clase:
+        t[estado] = {}
+        for simbolo in self.alfabeto:
+          e2 = self.destino(estado, simbolo)
+          c_e2 = self.clase_que_contiene(e2, particion_clases)
+          t[estado][simbolo] = c_e2
+      for e1 in t:
+        if self.no_pertenece_a_ninguna(e1, nueva_particion):
+          nueva_clase = set([e1])
+          for e2 in t:
+            if (t[e1] == t[e2]):
+              nueva_clase.add(e2)
+          nueva_particion.add(frozenset(nueva_clase))
+    return nueva_particion
+
   def clausura(self, estado, simbolo):
   	if simbolo == 'lambda':
   		clausura = [estado]

@@ -108,6 +108,22 @@ def test9():
   os.system("sleep 0.1")
   os.system("dot -Tpng archivos_dot/archivo_dot_5 -o images/imagen_5")
 
+def test9_bis():
+  os.system("./AFD.py -leng archivos_regex/archivo_regex_6 -aut archivos_automata/archivo_automata_6")
+  os.system("sleep 0.1")
+  os.system("./AFD.py -aut archivos_automata/archivo_automata_6 -dot archivos_dot/archivo_dot_6")
+  os.system("sleep 0.1")
+  os.system("dot -Tpng archivos_dot/archivo_dot_6 -o images/imagen_6")
+
+def test9_post():
+  os.system("./AFD.py -leng archivos_regex/archivo_regex_7 -aut archivos_automata/archivo_automata_7")
+  os.system("sleep 0.1")
+  os.system("./AFD.py -aut archivos_automata/archivo_automata_7 -dot archivos_dot/archivo_dot_7")
+  os.system("sleep 0.1")
+  os.system("dot -Tpng archivos_dot/archivo_dot_7 -o images/imagen_7")
+
+
+
 ################################## TESTS DE FUNCIONALIDAD (d,e y f) ####################################
 
 def test10():
@@ -208,15 +224,17 @@ def test13():
     tests_correctamente = False
 
 
-test1()
-test2()
-test3()
-test4()
-test5()
-test6()
-test7()
-test8()
-test9()
+#test1()
+#test2()
+#test3()
+#test4()
+#test5()
+#test6()
+#test7()
+#test8()
+#test9()
+#test9_bis()
+test9_post()
 #test10()
 #test11()
 #test12()
