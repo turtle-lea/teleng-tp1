@@ -302,7 +302,7 @@ class Automata:
         identificador = i
     return identificador
 
-  def determinizar_automata_2(self):
+  def determinizar_automata(self):
     identificador = 0
     map_identificador_estado = {}
     t = {}
@@ -404,61 +404,25 @@ class Automata:
       resto_transiciones_copy.append(t)
     return clausura
 
-  #La idea para calcular las nuevas transiciones es la siguiente:
-  #Dado un estado q y un símbolo de transición s
-  #Primero calculo la clausura lambda de q
-  #Para cada uno de los elementos de la clausura obtengo la clausura tomando la transición s
-  #Sobre cada uno de estos elementos, obtengo la clausura lambda nuevamente
-  #Finalmente, creo una transición del estilo (q,s,e) por cada uno de estos elementos
-  def remover_transiciones_lambda(self):
-    clausura_lambda_inicial = self.clausura_lambda(self.estado_inicial)
-    intersection = [x for x in clausura_lambda_inicial if x in self.estados_finales]
-    finales = list(self.estados_finales)
-    if len(intersection) > 0 and not(self.estado_inicial in self.estados_finales):
-      finales.append(self.estado_inicial)
-
-    nuevas_transiciones = []
-    for q in self.estados:
-      for s in self.alfabeto:
-        if s != 'lambda':
-          clausura_lambda_q = self.clausura_lambda(q)
-          for e in clausura_lambda_q:
-            estados_alcanzables_por_transicion = self.delta_nd(e,s)
-            clausura_lambda_estados_alcanzables = [self.clausura_lambda(x) for x in estados_alcanzables_por_transicion ]
-            clausura_lambda_estados_alcanzables = [x for sublist in clausura_lambda_estados_alcanzables for x in sublist]
-            clausura_lambda_estados_alcanzables = set(clausura_lambda_estados_alcanzables)
-            for estado_clausura in clausura_lambda_estados_alcanzables:
-              nueva_t = [q, s, estado_clausura]
-              if not(nueva_t in nuevas_transiciones):
-                nuevas_transiciones.append(nueva_t)
-
-    alfabeto = list(self.alfabeto)
-    if 'lambda' in alfabeto:
-    	alfabeto.remove('lambda')
-    return Automata(self.estados, alfabeto, self.estado_inicial, finales, nuevas_transiciones)
-
-  ##### Metodos auxiliar para transformar un AFND en AFD
-
   def clausura_lambda(self,estado):
     return self.clausura(estado,'lambda')
 
+  ### Funcion delta definida para automatas no deterministicos
+  ### delta : Q x Sigma -> [Q]
+  ### Dado un estado y un simbolo, delta(q,s) devuelve el conjunto
+  ### de estados alcanzables tomando la transicion s desde q
   def delta_nd(self,estado,simbolo):
   	return sorted([t[2] for t in self.transiciones if (t[0] ==
   	 estado and t[1] == simbolo)])
 
+  ### Funcion delta generalizada para un conjunto de estados en automatas no deterministicos
+  ### delta_nd_conjunto : [Q] x Sigma -> [Q]. delta_conjunto(qs,s)
+  ### Devuelve el conjunto de estados alcanzables tomando la transicion s desde todos los q
+  ### pertenecientes a qs
   def delta_nd_conjunto(self,conjunto_estados,simbolo):
   	es = [self.delta_nd(e,simbolo) for e in conjunto_estados]
   	es = [e for sublist in es for e in sublist]
   	return list(set(es))
-
-  def transiciones_de_estado(self, estado):
-  	return [t[1] for t in self.transiciones if t[0] == estado]
-
-  def transiciones_de_conjunto(self,conjunto_estados):
-  	es = [self.transiciones_de_estado(e) for e in conjunto_estados]
-  	es = [e for sublist in es for e in sublist]
-  	es = list(set(es))
-  	return es
 
   def renombrar_estados(self):
   	nombre_actual = 0
@@ -481,26 +445,6 @@ class Automata:
   				self.transiciones[j] = nueva_t
   		self.estados[i] = nombre_actual
   		nombre_actual += 1
-
-  def determinizar_automata(self):
-  	inicial = [self.estado_inicial]
-  	faltan_agregar = [inicial]
-  	transiciones = []
-  	estados = []
-  	while len(faltan_agregar) > 0:
-  		es = faltan_agregar.pop()
-  		estados.append(es)
-  		ts = self.transiciones_de_conjunto(es)
-  		for t in ts:
-  			estado = self.delta_nd_conjunto(es,t)
-  			transiciones.append([es,t,estado])
-  			if not(estado in estados) and not(estado in faltan_agregar):
-  				faltan_agregar.append(estado)
-  	fs = set(self.estados_finales)
-  	finales = [e for e in estados if len(fs.intersection(set(e))) > 0]
-  	a = Automata(estados, self.alfabeto, inicial, finales, transiciones)
-  	a.renombrar_estados()
-  	return a
 
   def crear_estado_trampa(self):
         return max(self.estados)+1
