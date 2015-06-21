@@ -343,7 +343,6 @@ class Automata:
     return a
 
   def minimizar_afd_2(self):
-    print "Hola"
     finales = frozenset(self.estados_finales)
     no_finales = frozenset([e for e in self.estados if (e not in self.estados_finales)])
     particion_clases = set([no_finales, finales])
@@ -351,7 +350,6 @@ class Automata:
     while(particion_clases != nueva_particion_clases):
       particion_clases = nueva_particion_clases
       nueva_particion_clases = self.nueva_particion(particion_clases)
-    print nueva_particion_clases
     #return armar_automata(particion_clases, self)
 
   def destino(self, origen, label):
