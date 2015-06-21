@@ -325,7 +325,6 @@ class Automata:
           cola_conjunto_clausuras.append(conjunto_clausura)
       identificador += 1
 
-    #armar automata la concha de la lora
     estado_inicial = self.obtener_identificador(map_identificador_estado, estado_inicial)
     estados = []
     transiciones = []
