@@ -295,13 +295,60 @@ class Automata:
 
   ##### Metodos auxiliares para transformar AFND-lambda en AFND
 
+  def obtener_identificador(self, map_identificador_estado, conjunto_clausura):
+    identificador = -1
+    for i in map_identificador_estado:
+      if map_identificador_estado[i] == conjunto_clausura:
+        identificador = i
+    return identificador
+
+  def determinizar_automata_2(self):
+    identificador = 0
+    map_identificador_estado = {}
+    t = {}
+    estado_inicial = self.clausura_lambda(self.estado_inicial)
+    cola_conjunto_clausuras = [estado_inicial]
+
+    while len(cola_conjunto_clausuras) > 0:
+      estado_actual = cola_conjunto_clausuras.pop(0)
+      map_identificador_estado[identificador] = estado_actual
+      t[identificador] = {}
+      for symbol in self.alfabeto:
+        conjunto_clausura = self.delta_nd_conjunto(estado_actual, symbol)
+        conjunto_clausura2 = []
+        for cc in conjunto_clausura:
+          conjunto_clausura2 = conjunto_clausura2 + self.clausura_lambda(cc)
+        conjunto_clausura = set(conjunto_clausura + conjunto_clausura2)
+
+        t[identificador][symbol] = conjunto_clausura
+        if self.obtener_identificador(map_identificador_estado, conjunto_clausura) == (-1) and conjunto_clausura not in cola_conjunto_clausuras:
+          cola_conjunto_clausuras.append(conjunto_clausura)
+      identificador += 1
+
+    #armar automata la concha de la lora
+    estado_inicial = self.obtener_identificador(map_identificador_estado, estado_inicial)
+    estados = []
+    transiciones = []
+    estados_finales = []
+    for identificador in t.keys():
+      estados.append(identificador)
+      estado = map_identificador_estado[identificador]
+      if len(set(estado).intersection(self.estados_finales)) > 0:
+        estados_finales.append(identificador)
+      for simbolo in t[identificador].keys():
+        destino = t[identificador][simbolo]
+        idDestino = self.obtener_identificador(map_identificador_estado, destino)
+        transiciones.append([identificador,simbolo,idDestino])
+
+    a = Automata(estados, self.alfabeto, estado_inicial, estados_finales, transiciones)
+    return a
+
   def clausura(self, estado, simbolo):
-  	resto_transiciones = list(self.transiciones)
   	if simbolo == 'lambda':
   		clausura = [estado]
   	else:
   		clausura = []
-  	return self.clausura_aux(estado,simbolo,resto_transiciones,clausura)
+  	return self.clausura_aux(estado,simbolo,self.transiciones,clausura)
 
   def clausura_aux(self, estado, simbolo, resto_transiciones, clausura):
     resto_transiciones_copy = list(resto_transiciones)
@@ -436,11 +483,11 @@ class Automata:
     recorrer_automata  = self.estado_inicial
     i = 0
     j = 0
-    
+
     #Aceptamos cadena vacia
     if len(cadena) == 0 and self.estado_inicial in self.estados_finales:
 		return True
-		
+
     while (i < len(cadena)) and (j < len(self.transiciones)):
       if (self.transiciones[j][0] == recorrer_automata) and (self.transiciones[j][1] == cadena[i]):
         i=i+1
@@ -453,8 +500,8 @@ class Automata:
           return True
 
     return False
-    
-    
+
+
 
 
 #automata debe ser deterministico
