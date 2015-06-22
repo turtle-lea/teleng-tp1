@@ -9,7 +9,7 @@ Cada instancia tiene 3 atributos:
 La función que parsea la regex: ''parsear\_regex'' se llama recursivamente por cada uno de los argumentos, manteniendo el estado del archivo
 
 
-\subsection{Explicación del armado del autómata finito:}
+\subsection{Armado del autómata finito:}
 Para realizar esta función nosotros partimos de un lenguaje regular parseado, el cual está explicado en la sección \textbf{Parseo de Regex}. A este mismo lo leeremos e iremos armando el autómata finito correspondiente.
 La forma de generar nuestro autómata finito es por medio del método de Thompson. Básicamente el algoritmo funciona de forma recursiva y lo detallaremos a continuacion:
 \begin{itemize}
@@ -19,8 +19,25 @@ La forma de generar nuestro autómata finito es por medio del método de Thompso
 \item En el caso del \textit{CONCAT} y \textit{OR} que pueden tener $n$ argumentos, hemos optado que el \textit{armarConcat} y el \textit{armarOr} sólo puedan ir armando de a dos autómatas y luego, al obtener el armado de ambos, buscar recurisvamente el autómata del siguiente argumento y repite el paso anterior sucesivamente.
 \end{itemize}
 
+\subsection{Determinizar Autómata:}
+En esta función usamos el algoritmo visto en la clase práctica, calculamos las clausuras para cada estado.\newline
+Para poder obtener la primera clausura obtenemos el estado inicial y sobre ese aplicamos una clausura lambda y obtenemos el primer conjunto. Luego sobre este conjunto aplicamos la clausura para cada alfabeto del autómata no determinístico, sin contar el alfabeto "$lambda$".\newline
+Continuamos analizando como nos indica el algoritmo analizando cada conjunto conseguido para cada alfabeto, siempre y cuando no lo hayamos analizado ya.
+Finalizando cuando hayamos analizado todos sin obtener nuevos conjuntos sin analizar.\newline
+Dejando la teoría del algoritmo a un lado y basandonos en la implementacion, vamos a usar una cola en donde los nuevos conjuntos que vamos a ir consiguiendo lo vamos a meter en la cola, siempre y cuando no se haya analizado ni esté ya dentro de la cola. Luego sacaremos la cabeza de la cola y procederemos a analizar dicho conjunto como se describe en la teoría del algoritmo mencionada.\newline
+Además vamos a tener una tabla en donde cada fila es una clausura y cada columna son las letras del alfabeto, de esta forma a pesar de ir desencolando de la cola no vamos a perder las clausuras ya analizadas, por que las necesitamos luego para armar el autómata determinístco. Armar el autómata es sencillo, leeremos la tabla y resolveremos de la misma forma que lo hicimos en clase, poniendo todas las clausuras como estados, el estado inicial será la primer clausura, los estados finales los que en su clausura tienen un estado final del autómata no determinístico, y las transiciones uniendo la tabla, para el estado de la clausura y un alfabeto con la clausura que este en su casilla de la tabla.
 
-\subsection{Explicación del armado de un automata para hallar su complemento:}
+\subsection{Minimizar Autómata:}
+Para minimizar un autómata vamos a usar el algoritmo de minimizar basado en conjuntos. Para esto vamos a empezar partiendo los conjuntos de estados en clases, inicialmente se separaran en estados finales y no finales.\newline
+Luego, el algoritmo nos indicaba que deberíamos armar una tabla para cada clase, en donde cada fila es un estado perteneciente a la clase y cada columna es el alfabeto del autómata inicial. Y en cada casillero vamos a indicar el conjunto al que pertenece el estado destino de la transicion del estado fila y el alfabeto columna.\newline
+Finalizadas todas las tablas de cada clase, miraremos si dentro de la tabla agarrando cada estado si las filas son iguales o distintas. Si son distintas habra una nueva clase donde uno de los estados estará en esta nueva clase, y el otro en una nueva clase, donde agruparemos los que tengan las mismas filas que el primer estado en la primer clase nueva, y los que tengan las mismas fila que el segundo estado en la segunda clase nueva, y asi sucesivamente.\newline
+La implementación en este caso es bastante trivial a la explicación dada, en donde vamos a armar dicha tablas para cada clase de la particion, esto lo haremos iterativamente hasta que la nueva particion generada sea igual a la anterior. Para armar luego el autómata sera leer las tablas de la última partición generada y unir como lo indica el algoritmo.
+
+\subsection{Cadena pertenece al lenguaje:}
+
+\subsection{Interseccion de dos Autómatas:}
+
+\subsection{Complemento de un autómata:}
 Para esta función tuvimos un problema, ya que para hallar el complemento de un autómata necesitamos, para un estado y un alfabeto, saber su transición aunque ésta no exista. Para solucionar esto agregamos un estado \textit{"trampa"}, y nuestro algoritmo se encargará de generar las transiciones ausentes de nuestro autómata y llevarlas a este nuevo estado. Como sabemos este estado \textit{"trampa"} debe cumplir con su definición, no debe ser un estado final y tampoco se puede salir de él por medio de alguna transición. 
 
 \subsection{Equivalencia de autómatas}
