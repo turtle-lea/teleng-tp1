@@ -169,7 +169,7 @@ def interseccion_automatas(automata1, automata2):
 
 	a = Automata(estados, alfabeto, inicial, finales, transiciones)
 	a.renombrar_estados()
-	#a.determinizar_automata() # elimina estados inalcanzables o sobrantes
+	a = a.determinizar_automata() # elimina estados inalcanzables o sobrantes
 	return a
 
 def escribir_archivo(automata, f):
@@ -314,15 +314,16 @@ class Automata:
       map_identificador_estado[identificador] = estado_actual
       t[identificador] = {}
       for symbol in self.alfabeto:
-        conjunto_clausura = self.delta_nd_conjunto(estado_actual, symbol)
-        conjunto_clausura2 = []
-        for cc in conjunto_clausura:
-          conjunto_clausura2 = conjunto_clausura2 + self.clausura_lambda(cc)
-        conjunto_clausura = set(conjunto_clausura + conjunto_clausura2)
+        if symbol != 'lambda':
+          conjunto_clausura = self.delta_nd_conjunto(estado_actual, symbol)
+          conjunto_clausura2 = []
+          for cc in conjunto_clausura:
+            conjunto_clausura2 = conjunto_clausura2 + self.clausura_lambda(cc)
+          conjunto_clausura = set(conjunto_clausura + conjunto_clausura2)
 
-        t[identificador][symbol] = conjunto_clausura
-        if self.obtener_identificador(map_identificador_estado, conjunto_clausura) == (-1) and conjunto_clausura not in cola_conjunto_clausuras:
-          cola_conjunto_clausuras.append(conjunto_clausura)
+          t[identificador][symbol] = conjunto_clausura
+          if self.obtener_identificador(map_identificador_estado, conjunto_clausura) == (-1) and conjunto_clausura not in cola_conjunto_clausuras:
+            cola_conjunto_clausuras.append(conjunto_clausura)
       identificador += 1
 
     estado_inicial = self.obtener_identificador(map_identificador_estado, estado_inicial)
@@ -339,7 +340,47 @@ class Automata:
         idDestino = self.obtener_identificador(map_identificador_estado, destino)
         transiciones.append([identificador,simbolo,idDestino])
 
+    alfabeto = []
+    for a in self.alfabeto:
+      if a != 'lambda':
+        alfabeto.append(a)
+
+    a = Automata(estados, alfabeto, estado_inicial, estados_finales, transiciones)
+    return a
+
+  def particionPertenece(self, estado, particion_clases):
+    for p in particion_clases:
+      if estado in p:
+        particion = p
+    return particion
+
+  def armar_automata_minimo(self, particion_clases):
+    tablas = {}
+    for p in particion_clases:
+      t = {}
+      for e1 in p:
+        t[e1]={}
+        for simbolo in self.alfabeto:
+          e2 = self.destino(e1, simbolo)
+          p2 = self.particionPertenece(e2,particion_clases)
+          t[e1][simbolo] = p2
+      tablas[p] = t
+    estados = []
+    estados_finales = []
+    transiciones = []
+    for p in particion_clases:
+      estados.append(p)
+      if(self.estado_inicial in p):
+        estado_inicial = p
+      if(len([e for e in p if (e in self.estados_finales)]) != 0):
+        estados_finales.append(p)
+    for k in tablas:
+      e = tablas[k].keys()[0]
+      for simbolo in self.alfabeto:
+        transiciones.append([k,simbolo,tablas[k][e][simbolo]])
+
     a = Automata(estados, self.alfabeto, estado_inicial, estados_finales, transiciones)
+    a.renombrar_estados()
     return a
 
   def minimizar_afd_2(self):
@@ -350,7 +391,8 @@ class Automata:
     while(particion_clases != nueva_particion_clases):
       particion_clases = nueva_particion_clases
       nueva_particion_clases = self.nueva_particion(particion_clases)
-    #return armar_automata(particion_clases, self)
+    a = self.armar_automata_minimo(particion_clases)
+    return a
 
   def destino(self, origen, label):
     return [t[2] for t in self.transiciones if (t[0] == origen) and (t[1] == label)][0]
@@ -462,7 +504,9 @@ class Automata:
         transiciones_a_agregar = self.completar_transiciones(estado_trampa)
         nuevos_finales = set(self.estados+[estado_trampa]) - set(self.estados_finales)
         nuevos_finales = list(nuevos_finales)
-        return Automata(self.estados+[estado_trampa], self.alfabeto, self.estado_inicial, nuevos_finales, self.transiciones+transiciones_a_agregar)
+        a = Automata(self.estados+[estado_trampa], self.alfabeto, self.estado_inicial, nuevos_finales, self.transiciones+transiciones_a_agregar)
+        a = a.determinizar_automata()
+        return a
 
   def pertenece_al_lenguaje(self, cadena):
     recorrer_automata  = self.estado_inicial

@@ -14,9 +14,11 @@ def equivalentes(archivo_automata1, archivo_automata2):
 	
 	automata3 = interseccion_automatas(automata1,automata2.complemento())
 	automata4 = interseccion_automatas(automata2,automata1.complemento())
-	automata3 = minimizar_afd(automata3)
-	automata4 = minimizar_afd(automata4)
-	if len(automata3.transiciones) == 0 and len(automata4.transiciones) == 0:
+	#automata3 = automata3.minimizar_afd_2()
+	#automata3 = minimizar_afd(automata3)
+	#automata4 = minimizar_afd(automata4)
+	#automata4 = automata4.minimizar_afd_2()
+	if len(automata3.estados_finales) == 0 and len(automata4.estados_finales) == 0:
 		print True
 	else:
 		print False
