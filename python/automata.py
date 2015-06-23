@@ -170,6 +170,7 @@ def interseccion_automatas(automata1, automata2):
 	a = Automata(estados, alfabeto, inicial, finales, transiciones)
 	a.renombrar_estados()
 	a = a.determinizar_automata() # elimina estados inalcanzables o sobrantes
+	a = a.minimizar_afd_2()
 	return a
 
 def escribir_archivo(automata, f):
@@ -506,6 +507,7 @@ class Automata:
         nuevos_finales = list(nuevos_finales)
         a = Automata(self.estados+[estado_trampa], self.alfabeto, self.estado_inicial, nuevos_finales, self.transiciones+transiciones_a_agregar)
         a = a.determinizar_automata()
+        a = a.minimizar_afd_2()
         return a
 
   def pertenece_al_lenguaje(self, cadena):
