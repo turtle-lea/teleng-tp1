@@ -115,7 +115,7 @@ def test9_bis():
   os.system("sleep 0.1")
   os.system("dot -Tpng archivos_dot/archivo_dot_6 -o images/imagen_6")
 
-def test9_post():
+def test9_bis_bis():
   os.system("./AFD.py -leng archivos_regex/archivo_regex_7 -aut archivos_automata/archivo_automata_7")
   os.system("sleep 0.1")
   os.system("./AFD.py -aut archivos_automata/archivo_automata_7 -dot archivos_dot/archivo_dot_7")
@@ -184,46 +184,6 @@ def test12():
     sys.stderr.write('Fallo el complemento')
     tests_correctamente = False
 
-def test13():
-  global tests_correctamente
-  estados1 = [0,1,2,3,4]
-  alfabeto1 = ['a','b']
-  finales1 = [3]
-  estado_inicial1 = 0
-  transiciones1 = [[0,'a',1],[1,'b',3]]
-  automata1 = Automata(estados1, alfabeto1, estado_inicial1, finales1, transiciones1)
-
-  estados2 = [0,1,2,3,4]
-  alfabeto2 = ['a','b']
-  finales2 = [3]
-  estado_inicial2 = 0
-  transiciones2 = [[0,'a',1],[0,'b',2],[1,'b',3],[1,'a',2],[3,'a',2],[2,'a',4],[4,'b',2]]
-  automata2 = Automata(estados2, alfabeto2, estado_inicial2, finales2, transiciones2)
-
-  automata3 = interseccion_automatas(automata1,automata2.complemento())
-  automata4 = interseccion_automatas(automata2,automata1.complemento())
-  automata3 = automata3.minimizar_afd()
-  automata4 = automata4.minimizar_afd()
-  if len(automata3.transiciones) != 0 or len(automata4.transiciones) != 0:
-    sys.stderr.write('Fallo la equivalencia')
-    tests_correctamente = False
-
-  estados5 = [0,1,2,3,4]
-  alfabeto5 = ['a','b']
-  finales5 = [3]
-  estado_inicial5 = 0
-  transiciones5 = [[0,'a',1],[1,'a',3]]
-  automata5 = Automata(estados5, alfabeto5, estado_inicial5, finales5, transiciones5)
-
-  automata6 = interseccion_automatas(automata1,automata5.complemento())
-  automata7 = interseccion_automatas(automata5,automata1.complemento())
-  automata6 = automata6.minimizar_afd()
-  automata7 = automata7.minimizar_afd()
-  if len(automata6.transiciones) == 0 and len(automata7.transiciones) == 0:
-    sys.stderr.write('Fallo la equivalencia')
-    tests_correctamente = False
-
-
 test1()
 test2()
 test3()
@@ -234,11 +194,10 @@ test7()
 test8()
 test9()
 test9_bis()
-test9_post()
+test9_bis_bis()
 test10()
 test11()
 test12()
-test13()
 
 if tests_correctamente:
   print "Los tests finalizaron correctamente"
