@@ -202,8 +202,8 @@ def test13():
 
   automata3 = interseccion_automatas(automata1,automata2.complemento())
   automata4 = interseccion_automatas(automata2,automata1.complemento())
-  automata3 = minimizar_afd(automata3)
-  automata4 = minimizar_afd(automata4)
+  automata3 = automata3.minimizar_afd()
+  automata4 = automata4.minimizar_afd()
   if len(automata3.transiciones) != 0 or len(automata4.transiciones) != 0:
     sys.stderr.write('Fallo la equivalencia')
     tests_correctamente = False
@@ -217,28 +217,28 @@ def test13():
 
   automata6 = interseccion_automatas(automata1,automata5.complemento())
   automata7 = interseccion_automatas(automata5,automata1.complemento())
-  automata6 = minimizar_afd(automata6)
-  automata7 = minimizar_afd(automata7)
+  automata6 = automata6.minimizar_afd()
+  automata7 = automata7.minimizar_afd()
   if len(automata6.transiciones) == 0 and len(automata7.transiciones) == 0:
     sys.stderr.write('Fallo la equivalencia')
     tests_correctamente = False
 
 
-#test1()
-#test2()
-#test3()
-#test4()
-#test5()
-#test6()
-#test7()
-#test8()
-#test9()
-#test9_bis()
+test1()
+test2()
+test3()
+test4()
+test5()
+test6()
+test7()
+test8()
+test9()
+test9_bis()
 test9_post()
-#test10()
-#test11()
-#test12()
-#test13()
+test10()
+test11()
+test12()
+test13()
 
 if tests_correctamente:
   print "Los tests finalizaron correctamente"

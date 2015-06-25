@@ -10,7 +10,7 @@ def afd_minimo(archivo_regex, archivo_automata):
 
         ### AFND ---> AFD
         automata = automata.determinizar_automata()
-        automata = automata.minimizar_afd_2()
+        automata = automata.minimizar_afd()
         #automata = minimizar_afd(automata)
         escribir_archivo(automata, archivo_automata)
         return 0
