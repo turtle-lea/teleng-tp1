@@ -427,26 +427,21 @@ class Automata:
           nueva_particion.add(frozenset(nueva_clase))
     return nueva_particion
 
-  def clausura(self, estado, simbolo):
-  	if simbolo == 'lambda':
-  		clausura = [estado]
-  	else:
-  		clausura = []
-  	return self.clausura_aux(estado,simbolo,self.transiciones,clausura)
+  def clausura_lambda(self, estado):
+    ### Todo estado pertenece a su clausura lambda ###
+  	clausura = [estado]
+  	return self.clausura_aux(estado, self.transiciones,clausura)
 
-  def clausura_aux(self, estado, simbolo, resto_transiciones, clausura):
+  def clausura_aux(self, estado, resto_transiciones, clausura):
     resto_transiciones_copy = list(resto_transiciones)
-    resto_transiciones = [t for t in resto_transiciones if (t[0] == estado) and (t[1] == simbolo)]
+    resto_transiciones = [t for t in resto_transiciones if (t[0] == estado) and (t[1] == 'lambda')]
     for t in resto_transiciones:
       resto_transiciones_copy.remove(t)
-      clausura = self.clausura_aux(t[2], simbolo, resto_transiciones_copy, clausura)
+      clausura = self.clausura_aux(t[2], resto_transiciones_copy, clausura)
       if not (t[2] in clausura):
         clausura.append(t[2])
       resto_transiciones_copy.append(t)
     return clausura
-
-  def clausura_lambda(self,estado):
-    return self.clausura(estado,'lambda')
 
   ### Funcion delta definida para automatas no deterministicos
   ### delta : Q x Sigma -> [Q]
