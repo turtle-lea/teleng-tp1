@@ -13,6 +13,10 @@ tests_correctamente = True
 
 ####################################### TESTS DE INTEGRACION (ejercicios a,b y c) #############################
 
+os.system("mkdir -p archivos_automata")
+os.system("mkdir -p archivos_dot")
+os.system("mkdir -p images")
+
 ### Se parsea correctamente la regex archivos_regex/archivo_regex_1 ((a|b|c)*(de)+f)
 def test1():
   os.system("./AFD.py -leng archivos_regex/archivo_regex_1 -aut archivos_automata/archivo_automata_1")
